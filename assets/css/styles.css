@@ -43,3 +43,18 @@
 #attachButton.error {
     background-color: red;
 }
+
+#recordAudioPanel {
+    position: absolute;
+    right: 90px;
+    bottom: 40px;
+    background-color: rgba(128, 128, 128, 0.18);
+    padding: 8px;
+    border-radius: 8px;
+}
+
+#closeRecordAudioPanel {
+    margin-top: 8px;
+    margin-left: 8px;
+    cursor: pointer;
+}
