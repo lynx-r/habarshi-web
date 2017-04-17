@@ -37,7 +37,7 @@ function refineUpload() {
     var dropZone = $('#attachButton');
     var attachIcon = $('#attachIcon');
     dropZone.click(function () {
-        $('#selectFile').click();
+        $('#uploadFile').click();
     });
     dropZone[0].ondragover = function () {
         dropZone.addClass('hover');
@@ -57,59 +57,51 @@ function refineUpload() {
         dropZone.removeClass('hover');
         dropZone.addClass('drop');
         var file = event.dataTransfer.files[0];
-
-        if (file.size > MAX_FILE_SIZE) {
-            alert('Файл слишком большой!');
+        uploadFile(file).then(function (status) {
+            appendMessage(status, SERVICE_MESSAGE);
+            dropZone.removeClass('drop');
+            attachIcon.addClass('fa-paperclip');
+            attachIcon.removeClass('fa-plus');
+        }, function (error) {
+            alert(error);
             dropZone.addClass('error');
-            return false;
-        }
-        console.log(file);
-        var formData = new FormData();
-        formData.append('file', file);
-        var options = {
-            url: UPLOAD_URL,
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            xhr: function () {
-                var xhr = $.ajaxSettings.xhr();
-                xhr.upload.onprogress = uploadProgress;
-                return xhr;
-            }
-        };
-        $.ajax(options)
-            .done(function (data) {
-                console.log(data);
-                var response = JSON.parse(data);
-                var fileLink = '<a href="' + response['full_url'] + '" target="_blank">' + file.name + '</a>';
-                var message = getUserName() + ' загрузил файл ' + fileLink;
-                appendMessage(message, SERVICE_MESSAGE);
-                dropZone.removeClass('drop');
-                attachIcon.addClass('fa-paperclip');
-                attachIcon.removeClass('fa-plus');
-            })
-            .fail(function (xhr, message) {
-                console.log(message);
-                alert('Ошибка во время загрузки файлйа!');
-                dropZone.addClass('error');
-                attachIcon.addClass('fa-paperclip');
-                attachIcon.removeClass('fa-plus');
-            });
+            attachIcon.addClass('fa-paperclip');
+            attachIcon.removeClass('fa-plus');
+        }, function (progress) {
+        });
     };
+}
 
-    function stateChange(event) {
-        if (event.target.readyState === 4) {
-            if (event.target.status === 200) {
-                alert('Загрузка успешно завершена!');
-            } else {
-                console.log(event.target);
-                alert('Произошла ошибка!');
-                dropZone.addClass('error');
-            }
-        }
+function uploadFile(file) {
+    var defer = $.Deferred();
+    if (file.size > MAX_FILE_SIZE) {
+        return defer.reject('Файл слишком большой!');
     }
-
+    var formData = new FormData();
+    formData.append('file', file);
+    var options = {
+        url: UPLOAD_URL,
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        xhr: function () {
+            var xhr = $.ajaxSettings.xhr();
+            xhr.upload.onprogress = uploadProgress;
+            return xhr;
+        }
+    };
+    $.ajax(options)
+        .done(function (data) {
+            var response = JSON.parse(data);
+            var fileLink = '<a href="' + response['full_url'] + '" target="_blank">' + file.name + '</a>';
+            var message = getUserName() + ' загрузил файл ' + fileLink;
+            defer.resolve(message);
+        })
+        .fail(function (xhr, message) {
+            defer.reject('Ошибка во время загрузки файлйа!');
+        });
+    return defer.promise();
 }
 
 function uploadProgress(event) {
@@ -143,6 +135,15 @@ function submit(e, f) {
 function sendMessage() {
     appendMessage($('#messageInput').val(), OUT_MESSAGE);
     $('#messageInput').val('');
+    var file = $('#uploadFile')[0].files[0];
+    if (file.length !== 0) {
+        uploadFile(file).then(function (status) {
+            appendMessage(status, SERVICE_MESSAGE);
+        }, function (error) {
+            alert(error);
+        }, function (progress) {
+        });
+    }
 }
 
 function login() {
@@ -153,6 +154,9 @@ function login() {
 }
 
 function appendMessage(message, type) {
+    if (message.length === 0) {
+        return;
+    }
     var $messages = $('#messages');
     $messages.append(createMessageHTML(message, type));
     $messages.animate({scrollTop: $messages.scrollTop() + $messages.height()}, "slow");
