@@ -1,14 +1,3 @@
-var COOKIE_NAME = 'name';
-var COOKIE_AUTH = 'auth';
-var IN_MESSAGE = 1;
-var OUT_MESSAGE = 0;
-var SERVICE_MESSAGE = 2;
-var SERVER_URL = 'https://test.habarshi.com:11999';
-var UPLOAD_URL;
-var USERNAME = 'director';
-var PASSWORD = 'pass';
-var MAX_FILE_SIZE = 50000000; // максимальный размер файла - 50 мб.
-
 $(document).ready(function () {
     if (getCookie(COOKIE_AUTH) === 'false' || getCookie(COOKIE_AUTH) === undefined) {
         auth();
@@ -28,12 +17,29 @@ $(document).ready(function () {
     $('#messageInput').keypress(function (e) {
         submit(e, sendMessage);
     });
-    $('#showRecordAudio').click(function () {
-        $('#recordAudioPanel').toggleClass('hidden');
-    })
-    $('#closeRecordAudioPanel').click(function () {
-        $('#recordAudioPanel').addClass('hidden');
-    })
+    var startRecording = true;
+    var blinkRecordingInterval;
+    $('#toggleRecordAudio').click(function () {
+        if (startRecording === true) {
+            $('#toggleRecordAudio').toggleClass('red');
+            blinkRecordingInterval = setInterval(function () {
+                $('#toggleRecordAudio').toggleClass('red');
+            }, 1000);
+        } else {
+            clearInterval(blinkRecordingInterval);
+            $('#toggleRecordAudio').removeClass('red');
+        }
+        toggleRecording(startRecording, appendMessage);
+        startRecording = !startRecording;
+        if (startRecording === false) {
+            $('#toggleRecordAudio').prop('disabled', true);
+        }
+        setTimeout(function () {
+            if (startRecording === false) {
+                $('#toggleRecordAudio').prop('disabled', false);
+            }
+        }, 5000);
+    });
 });
 
 function toggleSelectFileButton(attachIcon, type) {
@@ -89,43 +95,6 @@ function refineUpload() {
         }, function (progress) {
         });
     };
-}
-
-function uploadFile(file) {
-    var defer = $.Deferred();
-    if (file === undefined || file.size > MAX_FILE_SIZE) {
-        return defer.reject('Файл слишком большой!');
-    }
-    var formData = new FormData();
-    formData.append('file', file);
-    var options = {
-        url: UPLOAD_URL,
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        xhr: function () {
-            var xhr = $.ajaxSettings.xhr();
-            xhr.upload.onprogress = uploadProgress;
-            return xhr;
-        }
-    };
-    $.ajax(options)
-        .done(function (data) {
-            var response = JSON.parse(data);
-            var fileLink = '<a href="' + response['full_url'] + '" target="_blank">' + file.name + '</a>';
-            var message = getUserName() + ' загрузил файл ' + fileLink;
-            defer.resolve(message);
-        })
-        .fail(function (xhr, message) {
-            defer.reject('Ошибка во время загрузки файлйа!');
-        });
-    return defer.promise();
-}
-
-function uploadProgress(event) {
-    var percent = parseInt(event.loaded / event.total * 100);
-    console.log('Загрузка: ' + percent + '%');
 }
 
 function auth() {
@@ -198,15 +167,9 @@ function createMessageHTML(message, type) {
     if (type === SERVICE_MESSAGE) {
         return '<div class="srv-msg message">' + message + '</div>';
     } else {
-        var formattedMsg;
-        if (message.startsWith('blob')) {
-            formattedMsg = (type === OUT_MESSAGE ? '<p><b>' + getUserName() + '</b> ' + new Date().toLocaleTimeString() + '</p>' : '')
-                + '<audio src="' + message + '" controls></audio>';
-        } else {
-            formattedMsg = (type === OUT_MESSAGE ? '<p><b>' + getUserName() + '</b> ' + new Date().toLocaleTimeString() + '</p>' : '')
+        var formattedMsg = (type === OUT_MESSAGE ? '<p><b>' + getUserName() + '</b> ' + new Date().toLocaleTimeString() + '</p>' : '')
                 + '<div>' + message + '</div>'
                 + '</div>';
-        }
         return '<div style="overflow: hidden;"><div class="' + (type === IN_MESSAGE ? 'in' : 'out') + '-msg message">'
             + formattedMsg
             + '</div>';

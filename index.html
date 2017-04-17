@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="assets/bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="assets/bower_components/font-awesome/css/font-awesome.min.css">
 
-    <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
-    <link rel="stylesheet" href="assets/bower_components/blueimp-file-upload/css/jquery.fileupload.css">
-    <link rel="stylesheet" href="assets/bower_components/blueimp-file-upload/css/jquery.fileupload-ui.css">
-    <!-- CSS adjustments for browsers with JavaScript disabled -->
-    <noscript>
-        <link rel="stylesheet" href="assets/bower_components/blueimp-file-upload/css/jquery.fileupload-noscript.css">
-    </noscript>
-    <noscript>
-        <link rel="stylesheet" href="assets/bower_components/blueimp-file-upload/css/jquery.fileupload-ui-noscript.css">
-    </noscript>
-
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -65,7 +54,7 @@
                 <input id="messageInput" type="text" class="form-control" placeholder="Введите ваше сообщение"
                        aria-describedby="send-button-aria">
                 <span class="input-group-btn" id="send-button-aria">
-                    <button id="showRecordAudio" class="btn btn-default"><i class="fa fa-microphone"></i></button>
+                    <button id="toggleRecordAudio" class="btn btn-default"><i class="fa fa-microphone"></i></button>
                     <form id="uploadForm" action="upload" method="POST" style="display: inline;" enctype="multipart/form-data">
                         <input id="uploadFile" name="file" type="file" class="hidden">
                         <a id="attachButton" class="btn btn-default" role="button">
@@ -100,11 +89,10 @@
 <script src="assets/bower_components/jquery/dist/jquery.min.js"></script>
 <script src="assets/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- For recording Audio -->
-<script src="https://cdn.WebRTC-Experiment.com/MediaStreamRecorder.js"></script>
+<script src="assets/bower_components/msr/MediaStreamRecorder.js"></script>
 
-<!-- for Edige/FF/Chrome/Opera/etc. getUserMedia support -->
-<script src="https://cdn.WebRTC-Experiment.com/gumadapter.js"></script>
-
+<script src="assets/js/constants.js"></script>
+<script src="assets/js/util.js"></script>
 <script src="assets/js/main.js"></script>
 <script src="assets/js/msr.js"></script>
 </body>
