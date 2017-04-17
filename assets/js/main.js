@@ -158,7 +158,15 @@ function appendMessage(message, type) {
 }
 
 function disableChat(disabled) {
+    if (disabled === true) {
+        $('#loginName').prop('placeholder', 'Ваше имя?');
+    } else {
+        $('#loginName').prop('placeholder', 'Здравствуйте, ' + getUserName() + '!');
+        $('#loginButton').text('Перезайти');
+    }
     $('#sendButton').prop('disabled', disabled);
+    $('#toggleRecordAudio').prop('disabled', disabled);
+    $('#attachButton').prop('disabled', disabled);
     $('#messageInput').prop('disabled', disabled);
     $('#messages').prop('disabled', disabled);
 }

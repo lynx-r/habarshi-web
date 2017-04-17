@@ -6,6 +6,9 @@
     color: white !important;
 }
 
+#loginName {
+    width: 250px;
+}
 #messages {
     height: 80vh;
     overflow: auto;
@@ -60,6 +63,6 @@
     cursor: pointer;
 }
 
-.red {
+.red, .red:hover {
     background-color: red;
 }
