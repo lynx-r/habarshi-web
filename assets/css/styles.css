@@ -12,17 +12,18 @@
 }
 
 .message {
-    max-width: 90vh;
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 6px;
 }
 
 .in-msg {
+    max-width: 90vh;
     background: rgba(255, 0, 0, 0.4);
 }
 
 .out-msg {
+    max-width: 90vh;
     background: rgba(200, 200, 200, 0.4);
     float: right;
     text-align: right;
