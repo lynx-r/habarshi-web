@@ -1,0 +1,46 @@
+{
+  "name": "opus-recorderjs",
+  "description": "Record audio from the mic into a wav or ogg opus file",
+  "main": [
+    "build/recorder.min.js",
+    "build/encoderWorker.min.js",
+    "build/decoderWorker.min.js",
+    "build/waveWorker.min.js"
+  ],
+  "license": [
+    "MIT",
+    "BSD-3-Clause"
+  ],
+  "ignore": [
+    "example.html",
+    "README.md",
+    "bower.json"
+  ],
+  "keywords": [
+    "Ogg",
+    "Opus",
+    "PCM",
+    "Decoder",
+    "Resampler",
+    "Streamer",
+    "Audio",
+    "Microphone",
+    "Recorder"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/chris-rudmin/Recorderjs.git"
+  },
+  "homepage": "https://github.com/chris-rudmin/Recorderjs",
+  "version": "0.5.0",
+  "_release": "0.5.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.5.0",
+    "commit": "d0b66b4b7033bde63302755cfc907917f6b24149"
+  },
+  "_source": "https://github.com/chris-rudmin/Recorderjs.git",
+  "_target": "^0.5.0",
+  "_originalSource": "opus-recorderjs",
+  "_direct": true
+}

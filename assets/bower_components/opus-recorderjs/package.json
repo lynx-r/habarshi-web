@@ -1,0 +1,41 @@
+{
+  "name": "opus-recorder",
+  "version": "0.5.0",
+  "description": "A library for recording opus encoded audio",
+  "homepage": "https://github.com/chris-rudmin/Recorderjs",
+  "author": "Chris Rudmin",
+  "keywords": [
+    "Ogg",
+    "Opus",
+    "PCM",
+    "Decoder",
+    "Resampler",
+    "Streamer",
+    "Audio",
+    "Microphone",
+    "Recorder"
+  ],
+  "license": "MIT",
+  "main": "build/recorder.min.js",
+  "files": [
+    "build/recorder.min.js",
+    "build/encoderWorker.min.js",
+    "build/decoderWorker.min.js",
+    "build/waveWorker.min.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/chris-rudmin/Recorderjs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/chris-rudmin/Recorderjs/issues",
+    "email": "chris.rudmin@gmail.com"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "devDependencies": {
+    "mocha": "2.4.5",
+    "uglify-js": "2.6.2"
+  }
+}
