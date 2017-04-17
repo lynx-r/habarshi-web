@@ -28,6 +28,12 @@ $(document).ready(function () {
     $('#messageInput').keypress(function (e) {
         submit(e, sendMessage);
     });
+    $('#showRecordAudio').click(function () {
+        $('#recordAudioPanel').toggleClass('hidden');
+    })
+    $('#closeRecordAudioPanel').click(function () {
+        $('#recordAudioPanel').addClass('hidden');
+    })
 });
 
 function toggleSelectFileButton(attachIcon, type) {
@@ -87,7 +93,7 @@ function refineUpload() {
 
 function uploadFile(file) {
     var defer = $.Deferred();
-    if (file.size > MAX_FILE_SIZE) {
+    if (file === undefined || file.size > MAX_FILE_SIZE) {
         return defer.reject('Файл слишком большой!');
     }
     var formData = new FormData();
@@ -131,7 +137,6 @@ function auth() {
             return;
         }
         UPLOAD_URL = 'http://' + uploads['address'] + ':' + uploads['port'] + '/upload';
-        console.log(data);
     }).fail(function (xhr, message) {
         alert('Не удалось авторизоваться');
         console.log(message);
@@ -149,7 +154,7 @@ function sendMessage() {
     appendMessage($('#messageInput').val(), OUT_MESSAGE);
     $('#messageInput').val('');
     var file = $('#uploadFile')[0].files[0];
-    if (file.length !== 0) {
+    if (file !== undefined && file.length !== 0) {
         var dropZone = $('#attachButton');
         var attachIcon = $('#attachIcon');
 
@@ -193,10 +198,18 @@ function createMessageHTML(message, type) {
     if (type === SERVICE_MESSAGE) {
         return '<div class="srv-msg message">' + message + '</div>';
     } else {
+        var formattedMsg;
+        if (message.startsWith('blob')) {
+            formattedMsg = (type === OUT_MESSAGE ? '<p><b>' + getUserName() + '</b> ' + new Date().toLocaleTimeString() + '</p>' : '')
+                + '<audio src="' + message + '" controls></audio>';
+        } else {
+            formattedMsg = (type === OUT_MESSAGE ? '<p><b>' + getUserName() + '</b> ' + new Date().toLocaleTimeString() + '</p>' : '')
+                + '<div>' + message + '</div>'
+                + '</div>';
+        }
         return '<div style="overflow: hidden;"><div class="' + (type === IN_MESSAGE ? 'in' : 'out') + '-msg message">'
-            + (type === OUT_MESSAGE ? '<p><b>' + getUserName() + '</b> ' + new Date().toLocaleTimeString() + '</p>' : '')
-            + '<div>' + message + '</div>'
-            + '</div></div>';
+            + formattedMsg
+            + '</div>';
     }
 }
 

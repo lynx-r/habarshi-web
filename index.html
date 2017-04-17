@@ -8,16 +8,8 @@
     <link rel="stylesheet" href="assets/bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="assets/bower_components/font-awesome/css/font-awesome.min.css">
 
-    <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
-    <link rel="stylesheet" href="assets/bower_components/blueimp-file-upload/css/jquery.fileupload.css">
-    <link rel="stylesheet" href="assets/bower_components/blueimp-file-upload/css/jquery.fileupload-ui.css">
-    <!-- CSS adjustments for browsers with JavaScript disabled -->
-    <noscript>
-        <link rel="stylesheet" href="assets/bower_components/blueimp-file-upload/css/jquery.fileupload-noscript.css">
-    </noscript>
-    <noscript>
-        <link rel="stylesheet" href="assets/bower_components/blueimp-file-upload/css/jquery.fileupload-ui-noscript.css">
-    </noscript>
+    <!--Audio Record-->
+    <link rel="stylesheet" href="https://cdn.webrtc-experiment.com/style.css">
 
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
@@ -57,13 +49,31 @@
                 <input id="messageInput" type="text" class="form-control" placeholder="Введите ваше сообщение"
                        aria-describedby="send-button-aria">
                 <span class="input-group-btn" id="send-button-aria">
+                    <button id="showRecordAudio" class="btn btn-default"><i class="fa fa-microphone"></i></button>
                     <form id="uploadForm" action="upload" method="POST" style="display: inline;" enctype="multipart/form-data">
                         <input id="uploadFile" name="file" type="file" class="hidden">
                         <a id="attachButton" class="btn btn-default" role="button">
                             <i id="attachIcon" class="fa fa-paperclip"></i></a>
                     </form>
                     <button id="sendButton" class="btn btn-primary"><i class="fa fa-send"></i></button>
-                </span>
+                </form>
+            </div>
+            <div id="recordAudioPanel" class="hidden">
+                <div id="closeRecordAudioPanel" class="pull-right"><i class="fa fa-times"></i></div>
+                <div class="btn-group">
+                    <button id="start-recording" type="button" class="btn btn-default"><i class="fa fa-circle"></i>
+                    </button>
+                    <button id="stop-recording" type="button" class="btn btn-default" disabled><i
+                            class="fa fa-square"></i></button>
+                    <button id="pause-recording" type="button" class="btn btn-default" disabled><i
+                            class="fa fa-pause"></i></button>
+                    <button id="resume-recording" type="button" class="btn btn-default" disabled><i
+                            class="fa fa-play-circle"></i></button>
+                    <button id="save-recording" type="button" class="btn btn-default" disabled><i class="fa fa-save"></i>
+                    </button>
+                </div>
+                <div id="audios-container"></div>
+                <div style="color: indianred;">Минимальная длина записи 5 секунд</div>
             </div>
         </div>
     </div>
@@ -73,6 +83,13 @@
 <!-- Latest compiled and minified JS -->
 <script src="assets/bower_components/jquery/dist/jquery.min.js"></script>
 <script src="assets/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- For recording Audio -->
+<script src="https://cdn.WebRTC-Experiment.com/MediaStreamRecorder.js"></script>
+
+<!-- for Edige/FF/Chrome/Opera/etc. getUserMedia support -->
+<script src="https://cdn.WebRTC-Experiment.com/gumadapter.js"></script>
+
 <script src="assets/js/main.js"></script>
+<script src="assets/js/msr.js"></script>
 </body>
 </html>
