@@ -22,6 +22,14 @@
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
+<!--[if lt IE 8]><!-->
+<h1 style="color: red;">
+    "Вы используете крайне устаревшую версию IE 8, которая с 12 ноября 2012 года более не поддерживается, в связи с
+    устаревшими технологиями и нарушением Вашей безопасности". Просим Вас обновить Ваш браузер или перейти на Google
+    Chrome
+    или Mozilla Firefox.
+</h1>
+<!--<![endif]-->
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -57,7 +65,8 @@
                 <input id="messageInput" type="text" class="form-control" placeholder="Введите ваше сообщение"
                        aria-describedby="send-button-aria">
                 <span class="input-group-btn" id="send-button-aria">
-                    <form id="uploadForm" action="upload" method="POST" style="display: inline;" enctype="multipart/form-data">
+                    <form id="uploadForm" action="upload" method="POST" style="display: inline;"
+                          enctype="multipart/form-data">
                         <input id="uploadFile" name="file" type="file" class="hidden">
                         <a id="attachButton" class="btn btn-default" role="button">
                             <i id="attachIcon" class="fa fa-paperclip"></i></a>
