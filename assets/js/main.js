@@ -1,4 +1,7 @@
 var COOKIE_NAME = 'name';
+var IN_MESSAGE = 1;
+var OUT_MESSAGE = 0;
+var SERVICE_MESSAGE = 2;
 
 $(document).ready(function () {
     var name = getCookie(COOKIE_NAME);
@@ -25,8 +28,8 @@ function submit(e, f) {
 }
 
 function sendMessage() {
-    var message = getCookie(COOKIE_NAME) + '> ' + $('#messageInput').val() + '\n';
-    $('#messagesTextarea').append(message);
+    var message = createMessageHTML($('#messageInput').val(), OUT_MESSAGE);
+    appendMessage(message);
     $('#messageInput').val('');
 }
 
@@ -34,13 +37,30 @@ function login() {
     setCookie(COOKIE_NAME, $('#loginName').val());
     $('#loginName').val('');
     disableChat(false);
-    $('#greeting').html('Приветствуем Вас, ' + getCookie(COOKIE_NAME) + '!');
+    appendMessage(createMessageHTML('Вы вошли в чат как ' + getCookie(COOKIE_NAME), SERVICE_MESSAGE));
+}
+
+function appendMessage(message) {
+    var $messages = $('#messages');
+    $messages.append(message);
+    $messages.animate({scrollTop: $messages.scrollTop() + $messages.height()}, "slow");
 }
 
 function disableChat(disabled) {
     $('#sendButton').prop('disabled', disabled);
     $('#messageInput').prop('disabled', disabled);
-    $('#messagesTextarea').prop('disabled', disabled);
+    $('#messages').prop('disabled', disabled);
+}
+
+function createMessageHTML(message, type) {
+    if (type === SERVICE_MESSAGE) {
+        return '<div class="srv-msg message">' + message + '</div>';
+    } else {
+        return '<div style="overflow: hidden;"><div class="' + (type === IN_MESSAGE ? 'in' : 'out') + '-msg message">'
+            + (type === OUT_MESSAGE ? '<p><b>' + getCookie(COOKIE_NAME) + '</b> ' + new Date().toLocaleTimeString() + '</p>' : '')
+            + '<div>' + message + '</div>'
+            + '</div></div>';
+    }
 }
 
 // возвращает cookie с именем name, если есть, если нет, то undefined

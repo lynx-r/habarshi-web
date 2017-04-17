@@ -1,0 +1,35 @@
+.navbar {
+    background-color: red;
+}
+
+.navbar-brand {
+    color: white !important;
+}
+
+#messages {
+    height: 80vh;
+    overflow: auto;
+}
+
+.message {
+    max-width: 90vh;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+.in-msg {
+    background: rgba(255, 0, 0, 0.4);
+}
+
+.out-msg {
+    background: rgba(200, 200, 200, 0.4);
+    float: right;
+    text-align: right;
+}
+
+.srv-msg {
+    text-align: center;
+    font-size: small;
+    font-style: italic;
+}
