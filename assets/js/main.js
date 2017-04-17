@@ -30,26 +30,41 @@ $(document).ready(function () {
     });
 });
 
+function toggleSelectFileButton(attachIcon, type) {
+    if (type === 'plus') {
+        attachIcon.removeClass('fa-paperclip');
+        attachIcon.addClass('fa-plus');
+    } else {
+        attachIcon.removeClass('fa-plus');
+        attachIcon.addClass('fa-paperclip');
+    }
+}
 function refineUpload() {
     if (typeof(window.FileReader) === 'undefined') {
         alert('Drag&Drop не поддерживается браузером!');
     }
     var dropZone = $('#attachButton');
     var attachIcon = $('#attachIcon');
+
+    // Простая загрузка
     dropZone.click(function () {
         $('#uploadFile').click();
     });
+    $('#uploadFile').on('change', function () {
+        dropZone.addClass('drop');
+        toggleSelectFileButton(attachIcon);
+    });
+
+    // Drag & Drop Upload
     dropZone[0].ondragover = function () {
         dropZone.addClass('hover');
-        attachIcon.removeClass('fa-paperclip');
-        attachIcon.addClass('fa-plus');
+        toggleSelectFileButton(attachIcon, 'plus');
         return false;
     };
 
     dropZone[0].ondragleave = function () {
         dropZone.removeClass('hover');
-        attachIcon.addClass('fa-paperclip');
-        attachIcon.removeClass('fa-plus');
+        toggleSelectFileButton(attachIcon, 'paperclip');
         return false;
     };
     dropZone[0].ondrop = function (event) {
@@ -60,13 +75,11 @@ function refineUpload() {
         uploadFile(file).then(function (status) {
             appendMessage(status, SERVICE_MESSAGE);
             dropZone.removeClass('drop');
-            attachIcon.addClass('fa-paperclip');
-            attachIcon.removeClass('fa-plus');
+            toggleSelectFileButton(attachIcon, 'paperclip');
         }, function (error) {
             alert(error);
             dropZone.addClass('error');
-            attachIcon.addClass('fa-paperclip');
-            attachIcon.removeClass('fa-plus');
+            toggleSelectFileButton(attachIcon, 'paperclip');
         }, function (progress) {
         });
     };
@@ -137,12 +150,20 @@ function sendMessage() {
     $('#messageInput').val('');
     var file = $('#uploadFile')[0].files[0];
     if (file.length !== 0) {
+        var dropZone = $('#attachButton');
+        var attachIcon = $('#attachIcon');
+
         uploadFile(file).then(function (status) {
             appendMessage(status, SERVICE_MESSAGE);
+            dropZone.removeClass('drop');
+            toggleSelectFileButton(attachIcon, 'paperclip');
         }, function (error) {
+            dropZone.removeClass('error');
+            toggleSelectFileButton(attachIcon, 'paperclip');
             alert(error);
         }, function (progress) {
         });
+        $('#uploadFile').val('');
     }
 }
 
