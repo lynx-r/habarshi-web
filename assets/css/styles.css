@@ -33,3 +33,13 @@
     font-size: small;
     font-style: italic;
 }
+
+#attachButton.hover {
+    background-color: green;
+}
+#attachButton.drop {
+    background-color: dodgerblue;
+}
+#attachButton.error {
+    background-color: red;
+}
