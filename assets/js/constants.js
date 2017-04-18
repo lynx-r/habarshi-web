@@ -1,5 +1,6 @@
 var COOKIE_NAME = 'name';
 var COOKIE_AUTH = 'auth';
+var COOKIE_SESSION = 'session';
 var IN_MESSAGE = 1;
 var OUT_MESSAGE = 0;
 var SERVICE_MESSAGE = 2;

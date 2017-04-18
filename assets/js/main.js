@@ -1,5 +1,9 @@
 $(document).ready(function () {
-    if (getCookie(COOKIE_AUTH) === 'false' || getCookie(COOKIE_AUTH) === undefined) {
+    if (!isValidUrl()) {
+        alert('Не верная ссылка!');
+        return;
+    }
+    if (isAuthenticated()) {
         auth();
     }
     refineUpload();
@@ -100,14 +104,18 @@ function refineUpload() {
 }
 
 function auth() {
-    $.post(SERVER_URL + '/auth/1?username=' + USERNAME + '&password=' + PASSWORD, function (data) {
-        var uploads = JSON.parse(data)['uploads'];
+    // aaa62d15-ee1c-4e3f-bafe-eb15e9b1a974
+    $.post(SERVER_URL + '/session-config?session=' + , function (data) {
+        var response = JSON.parse(data);
+        var uploads = response['uploads'];
         if (uploads === undefined) {
             console.log(data);
             alert('Не удалось авторизоваться');
             return;
         }
         UPLOAD_URL = 'http://' + uploads['address'] + ':' + uploads['port'] + '/upload';
+        setCookie(COOKIE_SESSION, response['session']);
+        console.log(response['session']);
     }).fail(function (xhr, message) {
         alert('Не удалось авторизоваться');
         console.log(message);
@@ -189,6 +197,10 @@ function getUserName() {
     return getCookie(COOKIE_NAME);
 }
 
+function getSession() {
+    return getCookie(COOKIE_SESSION);
+}
+
 // возвращает cookie с именем name, если есть, если нет, то undefined
 function getCookie(name) {
     var matches = document.cookie.match(new RegExp(
@@ -224,4 +236,10 @@ function setCookie(name, value, options) {
     }
 
     document.cookie = updatedCookie;
+}
+
+function isAuthenticated() {
+    // проверить что сессия истекла
+    return getCookie(COOKIE_AUTH) === 'false' || getCookie(COOKIE_AUTH) === undefined
+        || getCookie(COOKIE_SESSION) === undefined;
 }
