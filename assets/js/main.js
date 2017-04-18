@@ -26,10 +26,13 @@ $(document).ready(function () {
                 $('#toggleRecordAudio').toggleClass('red');
             }, 1000);
         } else {
-            clearInterval(blinkRecordingInterval);
-            $('#toggleRecordAudio').removeClass('red');
         }
-        toggleRecording(startRecording, appendMessage);
+        toggleRecording(startRecording, appendMessage).then(function (data) {
+            if (startRecording === true && data === 'success') {
+                clearInterval(blinkRecordingInterval);
+                $('#toggleRecordAudio').removeClass('red');
+            }
+        });
         startRecording = !startRecording;
         if (startRecording === false) {
             $('#toggleRecordAudio').prop('disabled', true);
@@ -63,8 +66,7 @@ function refineUpload() {
         $('#uploadFile').click();
     });
     $('#uploadFile').on('change', function () {
-        dropZone.addClass('drop');
-        toggleSelectFileButton(attachIcon);
+        sendMessage();
     });
 
     // Drag & Drop Upload
@@ -168,7 +170,6 @@ function disableChat(disabled) {
     $('#toggleRecordAudio').prop('disabled', disabled);
     $('#attachButton').prop('disabled', disabled);
     $('#messageInput').prop('disabled', disabled);
-    $('#messages').prop('disabled', disabled);
 }
 
 function createMessageHTML(message, type) {

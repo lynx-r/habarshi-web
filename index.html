@@ -55,31 +55,13 @@
                        aria-describedby="send-button-aria">
                 <span class="input-group-btn" id="send-button-aria">
                     <button id="toggleRecordAudio" class="btn btn-default"><i class="fa fa-microphone"></i></button>
-                    <form id="uploadForm" action="upload" method="POST" style="display: inline;" enctype="multipart/form-data">
-                        <input id="uploadFile" name="file" type="file" class="hidden">
-                        <a id="attachButton" class="btn btn-default" role="button">
-                            <i id="attachIcon" class="fa fa-paperclip"></i></a>
-                    </form>
+                    <input id="uploadFile" name="file" type="file" class="hidden">
+                    <button id="attachButton" class="btn btn-default">
+                        <i id="attachIcon" class="fa fa-paperclip"></i></button>
                     <button id="sendButton" class="btn btn-primary"><i class="fa fa-send"></i></button>
-                </form>
+                </span>
             </div>
-            <div id="recordAudioPanel" class="hidden">
-                <div id="closeRecordAudioPanel" class="pull-right"><i class="fa fa-times"></i></div>
-                <div class="btn-group">
-                    <button id="start-recording" type="button" class="btn btn-default"><i class="fa fa-circle"></i>
-                    </button>
-                    <button id="stop-recording" type="button" class="btn btn-default" disabled><i
-                            class="fa fa-square"></i></button>
-                    <button id="pause-recording" type="button" class="btn btn-default" disabled><i
-                            class="fa fa-pause"></i></button>
-                    <button id="resume-recording" type="button" class="btn btn-default" disabled><i
-                            class="fa fa-play-circle"></i></button>
-                    <button id="save-recording" type="button" class="btn btn-default" disabled><i class="fa fa-save"></i>
-                    </button>
-                </div>
-                <div id="audios-container"></div>
-                <div style="color: indianred;">Минимальная длина записи 5 секунд</div>
-            </div>
+            <div id="audios-container" class="hidden"></div>
         </div>
     </div>
 </div>
