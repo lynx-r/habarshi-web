@@ -19,12 +19,12 @@ function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
     navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
 }
 
-function toggleRecording(start, appendMessage) {
+function toggleRecording(start) {
     var defer = $.Deferred();
     if (start === true) {
         mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
         captureUserMedia(mediaConstraints, function (stream) {
-            return onMediaSuccess(defer, stream, appendMessage);
+            return onMediaSuccess(defer, stream);
         }, function (e) {
             onMediaError(e);
             defer.reject('fail');
@@ -38,7 +38,7 @@ function toggleRecording(start, appendMessage) {
     return defer.promise();
 }
 
-function onMediaSuccess(defer, stream, appendMessage) {
+function onMediaSuccess(defer, stream) {
     var audio = document.createElement('audio');
     audio = mergeProps(audio, {
         controls: true,
@@ -63,7 +63,7 @@ function onMediaSuccess(defer, stream, appendMessage) {
 
             if (recordStopped) {
                 log('e '+mp3Data.length);
-                finishEncoding(mp3Data, appendMessage, defer);
+                finishEncoding(mp3Data, defer);
             }
         };
         fileReader.readAsArrayBuffer(blob);
@@ -84,13 +84,12 @@ function finishEncoding(mp3Data, appendMessage, defer) {
     });
 
     uploadFile(file).then(function (data) {
-        appendMessage(data, SERVICE_MESSAGE);
-        defer.resolve('success');
+        defer.resolve({'status': 'success', 'text': data});
     }, function (xhr, message) {
         showError('Не удалось загрузить аудио файл: ' + message);
-        defer.reject('fail');
+        defer.reject({'status': 'fail'});
     }, function (status) {
         log(status);
-        defer.resolve('status');
+        defer.resolve({});
     });
 }

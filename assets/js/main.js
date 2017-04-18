@@ -8,7 +8,7 @@ $(document).ready(function () {
     }
     refineUpload();
     var name = getUserName();
-    if (name === undefined) {
+    if (name === null) {
         disableChat(true);
     } else {
         disableChat(false);
@@ -31,10 +31,11 @@ $(document).ready(function () {
             }, 1000);
         } else {
         }
-        toggleRecording(startRecording, appendMessage).then(function (data) {
-            if (startRecording === true && data === 'success') {
+        toggleRecording(startRecording).then(function (data) {
+            if (startRecording === true && data['status'] === 'success') {
                 clearInterval(blinkRecordingInterval);
                 $('#toggleRecordAudio').removeClass('red');
+                createMessageHTML(getUserName(), new Date().toLocaleTimeString(), data['message'], SERVICE_MESSAGE);
             }
         });
         startRecording = !startRecording;
@@ -47,6 +48,8 @@ $(document).ready(function () {
             }
         }, 5000);
     });
+
+    startPolling();
 });
 
 /**
@@ -60,6 +63,46 @@ function checkIsValidUrl() {
     putToStore(STORE_SEND_TO, to);
 
     return session !== undefined && to !== undefined;
+}
+
+function getAllMessagesFromServer() {
+    var getUrl = new URI(SERVER_URL + '/user/mam')
+        .addQuery('session', getSession());
+    $.get(getUrl, function (data) {
+        var response = JSON.parse(data);
+        var history = response['mam']['history'];
+        history.forEach(function (item) {
+            var jidFrom = item['from'];
+            var to = item['to'].split('@');
+            var type = item['to'] === getJid() ? IN_MESSAGE : OUT_MESSAGE;
+            log(item['from']);
+            if (item['from'] === 'security_bot@habarshi.com') {
+                type = SERVICE_MESSAGE;
+            }
+            var userinfoFrom = getUserList()[jidFrom];
+            var receivedFrom;
+            if (userinfoFrom !== undefined) {
+                receivedFrom = userinfoFrom['name'];
+            } else {
+                receivedFrom = jidFrom;
+            }
+            log(receivedFrom);
+            log(getUserList());
+            var username = type === IN_MESSAGE ? receivedFrom : getUserName();
+            appendMessage(username, item['text'], type, false, new Date(item['stamp']).toLocaleTimeString());
+        });
+        scrollMessagesToBottom();
+    })
+}
+
+function startPolling() {
+    setInterval(function () {
+        var latestMessages = getLatestMessagesFromServer();
+    }, 2000);
+}
+
+function getLatestMessagesFromServer() {
+
 }
 
 function toggleSelectFileButton(attachIcon, type) {
@@ -105,7 +148,7 @@ function refineUpload() {
         dropZone.addClass('drop');
         var file = event.dataTransfer.files[0];
         uploadFile(file).then(function (status) {
-            appendMessage(status, SERVICE_MESSAGE);
+            appendMessage(getUserName(), status, SERVICE_MESSAGE);
             dropZone.removeClass('drop');
             toggleSelectFileButton(attachIcon, 'paperclip');
         }, function (error) {
@@ -117,6 +160,19 @@ function refineUpload() {
     };
 }
 
+function extractMapJid_Userinfo(response, jid_userInfo) {
+    response.forEach(function (struc) {
+        var map = {};
+        struc['users'].reduce(function (p1, p2) {
+            p1[p2['jid']] = p2;
+            return p1;
+        }, map);
+        $.extend(jid_userInfo, map);
+        if (struc['children'] !== undefined) {
+            extractMapJid_Userinfo(struc['children'], jid_userInfo);
+        }
+    });
+}
 function auth() {
     // aaa62d15-ee1c-4e3f-bafe-eb15e9b1a974
     var sessionConfigUrl = new URI(SERVER_URL + '/session-config')
@@ -132,19 +188,15 @@ function auth() {
         var uploadUrl = 'http://' + uploads['address'] + ':' + uploads['port'] + '/upload';
         putToStore(STORE_UPLOAD_URL, uploadUrl);
         putToStore(STORE_JID, response['pull'][0]['jid']);
-        putToStore(STORE_NAME, response['username']);
+        putToStore(STORE_USERNAME, response['username']);
         var rosterUrl = new URI(SERVER_URL + '/user/roster')
             .addQuery('session', getSession());
         $.get(rosterUrl, function (data) {
             var response = JSON.parse(data);
             var jid_userInfo = {};
-            response.forEach(function (struc) {
-                struc['users'].reduce(function (p1, p2) {
-                    p1[p2['jid']] = p2;
-                    return p1;
-                }, jid_userInfo);
-            });
-            putToStore(STORE_USER_LIST, jid_userInfo);
+            extractMapJid_Userinfo(response, jid_userInfo);
+            putToStore(STORE_USER_LIST, JSON.stringify(jid_userInfo));
+            getAllMessagesFromServer();
         });
         log(getJid());
     }).fail(function (xhr, message) {
@@ -169,7 +221,7 @@ function sendMessage() {
         var attachIcon = $('#attachIcon');
 
         uploadFile(file).then(function (status) {
-            appendMessage(status, SERVICE_MESSAGE);
+            appendMessage(getUserName(), status, SERVICE_MESSAGE);
             dropZone.removeClass('drop');
             toggleSelectFileButton(attachIcon, 'paperclip');
         }, function (error) {
@@ -191,7 +243,7 @@ function sendMessageToServer(msg) {
     $.get(sendUrl, function (data) {
         var response = JSON.parse(data);
         if (response['ok'] === true) {
-            appendMessage(msg, OUT_MESSAGE);
+            appendMessage(getUserName(), msg, OUT_MESSAGE);
             $('#messageInput').val('');
         } else {
             showError('Ошибка отправки файла!');
@@ -200,19 +252,30 @@ function sendMessageToServer(msg) {
 }
 
 function login() {
-    putToStore(STORE_NAME, $('#loginName').val());
-    $('#loginName').val('');
+    // putToStore(STORE_USERNAME, $('#loginName').val());
+    // $('#loginName').val('');
     disableChat(false);
     appendMessage('Вы вошли в чат как ' + getUserName(), SERVICE_MESSAGE);
 }
 
-function appendMessage(message, type) {
+function scrollMessagesToBottom() {
+    var $messages = $('#messages');
+    $messages.animate({scrollTop: $messages.scrollTop() + $messages.prop('scrollHeight')}, "slow");
+}
+
+function appendMessage(username, message, type, scroll, timestamp) {
+    if (scroll === undefined) {
+        scroll = true;
+    }
+    timestamp = timestamp || new Date().toLocaleTimeString();
     if (message.length === 0) {
         return;
     }
     var $messages = $('#messages');
-    $messages.append(createMessageHTML(message, type));
-    $messages.animate({scrollTop: $messages.scrollTop() + $messages.height()}, "slow");
+    $messages.append(createMessageHTML(username, timestamp, message, type));
+    if (scroll !== undefined && scroll) {
+        scrollMessagesToBottom();
+    }
 }
 
 function disableChat(disabled) {
@@ -228,11 +291,11 @@ function disableChat(disabled) {
     $('#messageInput').prop('disabled', disabled);
 }
 
-function createMessageHTML(message, type) {
+function createMessageHTML(username, timestamp, message, type) {
     if (type === SERVICE_MESSAGE) {
         return '<div class="srv-msg message">' + message + '</div>';
     } else {
-        var formattedMsg = (type === OUT_MESSAGE ? '<p><b>' + getUserName() + '</b> ' + new Date().toLocaleTimeString() + '</p>' : '')
+        var formattedMsg = '<p><b>' + username + '</b> ' + timestamp + '</p>'
             + '<div>' + message + '</div>'
             + '</div>';
         return '<div style="overflow: hidden;"><div class="' + (type === IN_MESSAGE ? 'in' : 'out') + '-msg message">'
@@ -242,7 +305,7 @@ function createMessageHTML(message, type) {
 }
 
 function getUserName() {
-    return getFromStore(STORE_NAME);
+    return getFromStore(STORE_USERNAME);
 }
 
 function getJid() {
@@ -262,13 +325,13 @@ function getUploadUrl() {
 }
 
 function getUserList() {
-    return getFromStore(STORE_USER_LIST);
+    return JSON.parse(getFromStore(STORE_USER_LIST));
 }
 
 function isAuthenticated() {
     // проверить что сессия истекла
-    return getFromStore(STORE_AUTH) === 'false' || getFromStore(STORE_AUTH) === undefined
-        || getFromStore(STORE_JID) === undefined;
+    return getFromStore(STORE_AUTH) === 'false' || getFromStore(STORE_AUTH) === null
+        || getFromStore(STORE_JID) === null;
 }
 
 function showError(msg) {

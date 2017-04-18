@@ -1,4 +1,4 @@
-var STORE_NAME = 'name';
+var STORE_USERNAME = 'name';
 var STORE_AUTH = 'auth';
 var STORE_JID = 'jid';
 var STORE_SESSION = 'session';
