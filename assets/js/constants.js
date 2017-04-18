@@ -4,6 +4,7 @@ var STORE_JID = 'jid';
 var STORE_SESSION = 'session';
 var STORE_SEND_TO = 'to';
 var STORE_USER_LIST = 'userlist';
+var STORE_AFTER_MESSAGE = 'messageid';
 
 var IN_MESSAGE = 1;
 var OUT_MESSAGE = 0;

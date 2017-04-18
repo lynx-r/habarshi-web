@@ -48,8 +48,6 @@ $(document).ready(function () {
             }
         }, 5000);
     });
-
-    startPolling();
 });
 
 /**
@@ -65,17 +63,21 @@ function checkIsValidUrl() {
     return session !== undefined && to !== undefined;
 }
 
-function getAllMessagesFromServer() {
+function getMessagesFromServer(after) {
     var getUrl = new URI(SERVER_URL + '/user/mam')
         .addQuery('session', getSession());
+    if (after !== null) {
+        getUrl.addQuery('after', after);
+    }
     $.get(getUrl, function (data) {
         var response = JSON.parse(data);
         var history = response['mam']['history'];
         history.forEach(function (item) {
+            var msgId = item['id'];
+            putToStore(STORE_AFTER_MESSAGE, msgId);
             var jidFrom = item['from'];
             var to = item['to'].split('@');
             var type = item['to'] === getJid() ? IN_MESSAGE : OUT_MESSAGE;
-            log(item['from']);
             if (item['from'] === 'security_bot@habarshi.com') {
                 type = SERVICE_MESSAGE;
             }
@@ -86,10 +88,11 @@ function getAllMessagesFromServer() {
             } else {
                 receivedFrom = jidFrom;
             }
-            log(receivedFrom);
-            log(getUserList());
-            var username = type === IN_MESSAGE ? receivedFrom : getUserName();
-            appendMessage(username, item['text'], type, false, new Date(item['stamp']).toLocaleTimeString());
+            if (after === null || type === IN_MESSAGE) {
+                var username = type === IN_MESSAGE ? receivedFrom : getUserName();
+                var timestamp = new Date(parseInt(item['stamp']) * 1000).toLocaleTimeString();
+                appendMessage(username, item['text'], type, false, timestamp);
+            }
         });
         scrollMessagesToBottom();
     })
@@ -97,12 +100,8 @@ function getAllMessagesFromServer() {
 
 function startPolling() {
     setInterval(function () {
-        var latestMessages = getLatestMessagesFromServer();
+        getMessagesFromServer(getFromStore(STORE_AFTER_MESSAGE));
     }, 2000);
-}
-
-function getLatestMessagesFromServer() {
-
 }
 
 function toggleSelectFileButton(attachIcon, type) {
@@ -196,7 +195,8 @@ function auth() {
             var jid_userInfo = {};
             extractMapJid_Userinfo(response, jid_userInfo);
             putToStore(STORE_USER_LIST, JSON.stringify(jid_userInfo));
-            getAllMessagesFromServer();
+            getMessagesFromServer(null);
+            startPolling();
         });
         log(getJid());
     }).fail(function (xhr, message) {
