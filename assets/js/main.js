@@ -49,6 +49,10 @@ $(document).ready(function () {
     });
 });
 
+function isValidUrl() {
+    return getUrlVars()['session'] !== undefined;
+}
+
 function toggleSelectFileButton(attachIcon, type) {
     if (type === 'plus') {
         attachIcon.removeClass('fa-paperclip');
@@ -105,7 +109,9 @@ function refineUpload() {
 
 function auth() {
     // aaa62d15-ee1c-4e3f-bafe-eb15e9b1a974
-    $.post(SERVER_URL + '/session-config?session=' + , function (data) {
+    var url = new URI(SERVER_URL + '/session-config')
+        .addQuery({session: getUrlVars()['session']})
+    $.get(url, function (data) {
         var response = JSON.parse(data);
         var uploads = response['uploads'];
         if (uploads === undefined) {
@@ -113,9 +119,11 @@ function auth() {
             alert('Не удалось авторизоваться');
             return;
         }
-        UPLOAD_URL = 'http://' + uploads['address'] + ':' + uploads['port'] + '/upload';
-        setCookie(COOKIE_SESSION, response['session']);
-        console.log(response['session']);
+        var uploadUrl = 'http://' + uploads['address'] + ':' + uploads['port'] + '/upload';
+        setCookie(COOKIE_UPLOAD_URL, uploadUrl);
+        setCookie(COOKIE_JID, response['pull'][0]['jid']);
+        setCookie(COOKIE_NAME, response['username']);
+        console.log(getJid());
     }).fail(function (xhr, message) {
         alert('Не удалось авторизоваться');
         console.log(message);
@@ -172,7 +180,7 @@ function disableChat(disabled) {
         $('#loginName').prop('placeholder', 'Ваше имя?');
     } else {
         $('#loginName').prop('placeholder', 'Здравствуйте, ' + getUserName() + '!');
-        $('#loginButton').text('Перезайти');
+        $('#loginButton').text('Переименоваться');
     }
     $('#sendButton').prop('disabled', disabled);
     $('#toggleRecordAudio').prop('disabled', disabled);
@@ -185,8 +193,8 @@ function createMessageHTML(message, type) {
         return '<div class="srv-msg message">' + message + '</div>';
     } else {
         var formattedMsg = (type === OUT_MESSAGE ? '<p><b>' + getUserName() + '</b> ' + new Date().toLocaleTimeString() + '</p>' : '')
-                + '<div>' + message + '</div>'
-                + '</div>';
+            + '<div>' + message + '</div>'
+            + '</div>';
         return '<div style="overflow: hidden;"><div class="' + (type === IN_MESSAGE ? 'in' : 'out') + '-msg message">'
             + formattedMsg
             + '</div>';
@@ -197,49 +205,16 @@ function getUserName() {
     return getCookie(COOKIE_NAME);
 }
 
-function getSession() {
-    return getCookie(COOKIE_SESSION);
+function getJid() {
+    return getCookie(COOKIE_JID);
 }
 
-// возвращает cookie с именем name, если есть, если нет, то undefined
-function getCookie(name) {
-    var matches = document.cookie.match(new RegExp(
-        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-}
-
-function setCookie(name, value, options) {
-    options = options || {};
-
-    var expires = options.expires;
-
-    if (typeof expires == "number" && expires) {
-        var d = new Date();
-        d.setTime(d.getTime() + expires * 1000);
-        expires = options.expires = d;
-    }
-    if (expires && expires.toUTCString) {
-        options.expires = expires.toUTCString();
-    }
-
-    value = encodeURIComponent(value);
-
-    var updatedCookie = name + "=" + value;
-
-    for (var propName in options) {
-        updatedCookie += "; " + propName;
-        var propValue = options[propName];
-        if (propValue !== true) {
-            updatedCookie += "=" + propValue;
-        }
-    }
-
-    document.cookie = updatedCookie;
+function getUploadUrl() {
+    return getCookie(COOKIE_UPLOAD_URL);
 }
 
 function isAuthenticated() {
     // проверить что сессия истекла
     return getCookie(COOKIE_AUTH) === 'false' || getCookie(COOKIE_AUTH) === undefined
-        || getCookie(COOKIE_SESSION) === undefined;
+        || getCookie(COOKIE_JID) === undefined;
 }
