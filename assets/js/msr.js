@@ -59,10 +59,10 @@ function onMediaSuccess(defer, stream, appendMessage) {
             if (mp3buf.length > 0) {
                 mp3Data.push(new Int8Array(mp3buf));
             }
-            console.log(mp3Data.length);
+            log(mp3Data.length);
 
             if (recordStopped) {
-                console.log('e '+mp3Data.length);
+                log('e '+mp3Data.length);
                 finishEncoding(mp3Data, appendMessage, defer);
             }
         };
@@ -90,7 +90,7 @@ function finishEncoding(mp3Data, appendMessage, defer) {
         showError('Не удалось загрузить аудио файл: ' + message);
         defer.reject('fail');
     }, function (status) {
-        console.log(status);
+        log(status);
         defer.resolve('status');
     });
 }

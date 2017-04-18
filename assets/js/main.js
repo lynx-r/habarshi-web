@@ -125,7 +125,7 @@ function auth() {
         var response = JSON.parse(data);
         var uploads = response['uploads'];
         if (uploads === undefined) {
-            console.log(data);
+            log(data);
             showError('Не удалось авторизоваться');
             return;
         }
@@ -146,10 +146,10 @@ function auth() {
             });
             putToStore(STORE_USER_LIST, jid_userInfo);
         });
-        console.log(getJid());
+        log(getJid());
     }).fail(function (xhr, message) {
         showError('Не удалось авторизоваться');
-        console.log(message);
+        log(message);
     });
 }
 
@@ -187,7 +187,7 @@ function sendMessageToServer(msg) {
         .addQuery('session', getSession())
         .addQuery('text', msg)
         .addQuery('to', getSendTo());
-    console.log(sendUrl);
+    log(sendUrl);
     $.get(sendUrl, function (data) {
         var response = JSON.parse(data);
         if (response['ok'] === true) {
@@ -273,4 +273,8 @@ function isAuthenticated() {
 
 function showError(msg) {
     alert(msg);
+}
+
+function log(msg) {
+    console.log(msg);
 }

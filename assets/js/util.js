@@ -43,7 +43,7 @@ function uploadFile(file) {
 
 function uploadProgress(event) {
     var percent = parseInt(event.loaded / event.total * 100);
-    console.log('Загрузка: ' + percent + '%');
+    log('Загрузка: ' + percent + '%');
 }
 
 // Read a page's GET URL variables and return them as an associative array.
