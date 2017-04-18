@@ -7,4 +7,4 @@ var SERVER_URL = 'https://test.habarshi.com:11999';
 var UPLOAD_URL;
 var USERNAME = 'director';
 var PASSWORD = 'pass';
-var MAX_FILE_SIZE = 50000000; // максимальный размер файла - 50 мб.
+var MAX_FILE_SIZE = 500000000; // максимальный размер файла - 500 мб.

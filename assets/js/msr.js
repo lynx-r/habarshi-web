@@ -6,8 +6,6 @@ var mediaConstraints = {
     audio: true
 };
 
-var audiosContainer = document.getElementById('audios-container');
-
 var mediaRecorder;
 
 function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
@@ -39,9 +37,6 @@ function onMediaSuccess(defer, stream, appendMessage) {
         src: URL.createObjectURL(stream)
     });
     audio.play();
-    audiosContainer.innerHTML = '';
-    audiosContainer.appendChild(audio);
-    audiosContainer.appendChild(document.createElement('hr'));
     mediaRecorder = new MediaStreamRecorder(stream);
     mediaRecorder.stream = stream;
     mediaRecorder.recorderType = MediaRecorderWrapper;
