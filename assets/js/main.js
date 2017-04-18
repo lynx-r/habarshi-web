@@ -7,12 +7,7 @@ $(document).ready(function () {
         auth();
     }
     refineUpload();
-    var name = getUserName();
-    if (name === null) {
-        disableChat(true);
-    } else {
-        disableChat(false);
-    }
+    disableChat(true);
     $('#loginButton').click(login);
     $('#loginName').keypress(function (e) {
         submit(e, login);
@@ -197,6 +192,7 @@ function auth() {
             putToStore(STORE_USER_LIST, JSON.stringify(jid_userInfo));
             getMessagesFromServer(null);
             startPolling();
+            disableChat(false);
         });
         log(getJid());
     }).fail(function (xhr, message) {
@@ -295,7 +291,7 @@ function createMessageHTML(username, timestamp, message, type) {
     if (type === SERVICE_MESSAGE) {
         return '<div class="srv-msg message">' + message + '</div>';
     } else {
-        var formattedMsg = '<p><b>' + username + '</b> ' + timestamp + '</p>'
+        var formattedMsg = '<p><b>' + (type === IN_MESSAGE ? username : 'Я' ) + '</b> ' + timestamp + '</p>'
             + '<div>' + message + '</div>'
             + '</div>';
         return '<div style="overflow: hidden;"><div class="' + (type === IN_MESSAGE ? 'in' : 'out') + '-msg message">'
