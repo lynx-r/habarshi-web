@@ -87,7 +87,7 @@ function finishEncoding(mp3Data, appendMessage, defer) {
         appendMessage(data, SERVICE_MESSAGE);
         defer.resolve('success');
     }, function (xhr, message) {
-        alert('Не удалось загрузить аудио файл: ' + message);
+        showError('Не удалось загрузить аудио файл: ' + message);
         defer.reject('fail');
     }, function (status) {
         console.log(status);

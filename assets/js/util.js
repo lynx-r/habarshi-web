@@ -61,14 +61,14 @@ function getUrlVars()
 }
 
 // возвращает cookie с именем name, если есть, если нет, то undefined
-function getCookie(name) {
+function getFromStore(name) {
     var matches = document.cookie.match(new RegExp(
         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
     ));
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-function setCookie(name, value, options) {
+function putToStore(name, value, options) {
     options = options || {};
 
     var expires = options.expires;

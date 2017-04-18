@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    if (!isValidUrl()) {
-        alert('Не верная ссылка!');
+    if (!checkIsValidUrl()) {
+        showError('Не верная ссылка!');
         return;
     }
     if (isAuthenticated()) {
@@ -49,8 +49,17 @@ $(document).ready(function () {
     });
 });
 
-function isValidUrl() {
-    return getUrlVars()['session'] !== undefined;
+/**
+ * берет параметры session и to из get запроса и сохраняет в сессию
+ * @returns {boolean} возвращает true если проверка успешна
+ */
+function checkIsValidUrl() {
+    var session = getUrlVars()['session'];
+    var to = getUrlVars()['to'];
+    putToStore(STORE_SESSION, session);
+    putToStore(STORE_SEND_TO, to);
+
+    return session !== undefined && to !== undefined;
 }
 
 function toggleSelectFileButton(attachIcon, type) {
@@ -62,9 +71,10 @@ function toggleSelectFileButton(attachIcon, type) {
         attachIcon.addClass('fa-paperclip');
     }
 }
+
 function refineUpload() {
     if (typeof(window.FileReader) === 'undefined') {
-        alert('Drag&Drop не поддерживается браузером!');
+        showError('Drag&Drop не поддерживается браузером!');
     }
     var dropZone = $('#attachButton');
     var attachIcon = $('#attachIcon');
@@ -99,7 +109,7 @@ function refineUpload() {
             dropZone.removeClass('drop');
             toggleSelectFileButton(attachIcon, 'paperclip');
         }, function (error) {
-            alert(error);
+            showError(error);
             dropZone.addClass('error');
             toggleSelectFileButton(attachIcon, 'paperclip');
         }, function (progress) {
@@ -109,23 +119,36 @@ function refineUpload() {
 
 function auth() {
     // aaa62d15-ee1c-4e3f-bafe-eb15e9b1a974
-    var url = new URI(SERVER_URL + '/session-config')
-        .addQuery({session: getUrlVars()['session']})
-    $.get(url, function (data) {
+    var sessionConfigUrl = new URI(SERVER_URL + '/session-config')
+        .addQuery({session: getUrlVars()['session']});
+    $.get(sessionConfigUrl, function (data) {
         var response = JSON.parse(data);
         var uploads = response['uploads'];
         if (uploads === undefined) {
             console.log(data);
-            alert('Не удалось авторизоваться');
+            showError('Не удалось авторизоваться');
             return;
         }
         var uploadUrl = 'http://' + uploads['address'] + ':' + uploads['port'] + '/upload';
-        setCookie(COOKIE_UPLOAD_URL, uploadUrl);
-        setCookie(COOKIE_JID, response['pull'][0]['jid']);
-        setCookie(COOKIE_NAME, response['username']);
+        putToStore(STORE_UPLOAD_URL, uploadUrl);
+        putToStore(STORE_JID, response['pull'][0]['jid']);
+        putToStore(STORE_NAME, response['username']);
+        var rosterUrl = new URI(SERVER_URL + '/user/roster')
+            .addQuery('session', getSession());
+        $.get(rosterUrl, function (data) {
+            var response = JSON.parse(data);
+            var jid_userInfo = {};
+            response.forEach(function (struc) {
+                struc['users'].reduce(function (p1, p2) {
+                    p1[p2['jid']] = p2;
+                    return p1;
+                }, jid_userInfo);
+            });
+            putToStore(STORE_USER_LIST, jid_userInfo);
+        });
         console.log(getJid());
     }).fail(function (xhr, message) {
-        alert('Не удалось авторизоваться');
+        showError('Не удалось авторизоваться');
         console.log(message);
     });
 }
@@ -138,8 +161,8 @@ function submit(e, f) {
 }
 
 function sendMessage() {
-    appendMessage($('#messageInput').val(), OUT_MESSAGE);
-    $('#messageInput').val('');
+    var msg = $('#messageInput').val();
+    sendMessageToServer(msg);
     var file = $('#uploadFile')[0].files[0];
     if (file !== undefined && file.length !== 0) {
         var dropZone = $('#attachButton');
@@ -152,15 +175,32 @@ function sendMessage() {
         }, function (error) {
             dropZone.removeClass('error');
             toggleSelectFileButton(attachIcon, 'paperclip');
-            alert(error);
+            showError(error);
         }, function (progress) {
         });
         $('#uploadFile').val('');
     }
 }
 
+function sendMessageToServer(msg) {
+    var sendUrl = new URI(SERVER_URL + '/v1/chat/send')
+        .addQuery('session', getSession())
+        .addQuery('text', msg)
+        .addQuery('to', getSendTo());
+    console.log(sendUrl);
+    $.get(sendUrl, function (data) {
+        var response = JSON.parse(data);
+        if (response['ok'] === true) {
+            appendMessage(msg, OUT_MESSAGE);
+            $('#messageInput').val('');
+        } else {
+            showError('Ошибка отправки файла!');
+        }
+    })
+}
+
 function login() {
-    setCookie(COOKIE_NAME, $('#loginName').val());
+    putToStore(STORE_NAME, $('#loginName').val());
     $('#loginName').val('');
     disableChat(false);
     appendMessage('Вы вошли в чат как ' + getUserName(), SERVICE_MESSAGE);
@@ -202,19 +242,35 @@ function createMessageHTML(message, type) {
 }
 
 function getUserName() {
-    return getCookie(COOKIE_NAME);
+    return getFromStore(STORE_NAME);
 }
 
 function getJid() {
-    return getCookie(COOKIE_JID);
+    return getFromStore(STORE_JID);
+}
+
+function getSession() {
+    return getFromStore(STORE_SESSION);
+}
+
+function getSendTo() {
+    return getFromStore(STORE_SEND_TO);
 }
 
 function getUploadUrl() {
-    return getCookie(COOKIE_UPLOAD_URL);
+    return getFromStore(STORE_UPLOAD_URL);
+}
+
+function getUserList() {
+    return getFromStore(STORE_USER_LIST);
 }
 
 function isAuthenticated() {
     // проверить что сессия истекла
-    return getCookie(COOKIE_AUTH) === 'false' || getCookie(COOKIE_AUTH) === undefined
-        || getCookie(COOKIE_JID) === undefined;
+    return getFromStore(STORE_AUTH) === 'false' || getFromStore(STORE_AUTH) === undefined
+        || getFromStore(STORE_JID) === undefined;
+}
+
+function showError(msg) {
+    alert(msg);
 }
