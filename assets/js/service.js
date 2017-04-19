@@ -1,4 +1,5 @@
 function sendMessageToServer(msg) {
+    var defer = $.Deferred();
     var sendUrl = new URI(SERVER_URL + '/v1/chat/send')
         .addQuery('session', getSession())
         .addQuery('text', msg)
@@ -8,10 +9,13 @@ function sendMessageToServer(msg) {
         if (response['ok'] === true) {
             appendMessage(response['id'], getUserName(), msg, OUT_MESSAGE, true, new Date());
             $('#messageInput').val('');
+            defer.resolve();
         } else {
             showError('Ошибка отправки файла!');
+            defer.reject();
         }
-    })
+    });
+    return defer.promise();
 }
 
 function uploadFile(file) {
@@ -38,9 +42,12 @@ function uploadFile(file) {
     $.ajax(options)
         .done(function (data) {
             var response = JSON.parse(data);
-            var fullUrl = response['full_url'];
-            var message = createFileMessageHTML(audioFile, fullUrl, file);
-            // document.body.style.cursor = 'auto';
+            var dataObj = {
+                file_name: file.name,
+                full_url: response['full_url'],
+                preview_url: response['preview_url']
+            };
+            var message = createHabarshiMessage(dataObj);
             defer.resolve(message);
         })
         .fail(function (xhr, message) {

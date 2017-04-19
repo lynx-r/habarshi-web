@@ -78,11 +78,11 @@ function setupUpload() {
         dropZone.removeClass('hover');
         dropZone.addClass('drop');
         var file = event.dataTransfer.files[0];
-        uploadFile(file).then(function (status) {
-            // TODO поменять способ добавления сообщения
-            appendMessage(null, getUserName(), status, SERVICE_MESSAGE, true, new Date());
-            dropZone.removeClass('drop');
-            toggleSelectFileButton(attachIcon, 'paperclip');
+        uploadFile(file).then(function (message) {
+            sendMessageToServer(message).always(function () {
+                dropZone.removeClass('drop');
+                toggleSelectFileButton(attachIcon, 'paperclip');
+            });
         }, function (error) {
             showError(error);
             dropZone.addClass('error');
@@ -120,11 +120,12 @@ function sendFile(file) {
     var dropZone = $('#attachButton');
     var attachIcon = $('#attachIcon');
 
-    uploadFile(file).then(function (status) {
+    uploadFile(file).then(function (message) {
         // TODO поменять способ добавления сообщения
-        appendMessage(null, getUserName(), status, SERVICE_MESSAGE, true, new Date());
-        dropZone.removeClass('drop');
-        toggleSelectFileButton(attachIcon, 'paperclip');
+        sendMessageToServer(message).always(function () {
+            dropZone.removeClass('drop');
+            toggleSelectFileButton(attachIcon, 'paperclip');
+        });
     }, function (error) {
         dropZone.removeClass('error');
         toggleSelectFileButton(attachIcon, 'paperclip');

@@ -1,16 +1,13 @@
-
 function uploadProgress(event) {
     var percent = parseInt(event.loaded / event.total * 100);
     log('Загрузка: ' + percent + '%');
 }
 
 // Read a page's GET URL variables and return them as an associative array.
-function getUrlVars()
-{
+function getUrlVars() {
     var vars = [], hash;
     var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++)
-    {
+    for (var i = 0; i < hashes.length; i++) {
         hash = hashes[i].split('=');
         vars.push(hash[0]);
         vars[hash[0]] = hash[1];
@@ -61,6 +58,20 @@ function isHabarshiMessage(text) {
     return text.startsWith(HABARSHI_MESSAGE);
 }
 
+/**
+ Пример сообщения на входе
+
+ <HabarshiServiceMessage>
+ <file_name>|
+ <20170325_125654.jpg>,
+ <full_url>|
+ <http://test.habarshi.com:11987/content/085e5238-be49-4946-b76e-8cdb951b8ec7.jpg>,
+ <preview_url>|
+ <http://test.habarshi.com:11987/content/preview_085e5238-be49-4946-b76e-8cdb951b8ec7.jpg>
+
+ * @param text
+ * @returns {{file_name: *, full_url: *, preview_url: string, type}}
+ */
 function parseHabarshiMessage(text) {
     var rx = /<file_name>\|<([^>]+)>,<full_url>\|<([^>]+)>(?:,<preview_url>\|<([^>]+)>)?/g;
     var match = rx.exec(text);
@@ -68,14 +79,27 @@ function parseHabarshiMessage(text) {
     var fullUrl = match[2];
     var type = new Mimer().get(fullUrl);
     var previewUrl = match[3] === undefined ? "null" : match[3];
-    var msg = {
+    return {
         file_name: fileName,
         full_url: fullUrl,
         preview_url: previewUrl,
         type: type
     };
-    log(msg);
-    return msg;
+}
+
+function createHabarshiMessage(dataObj) {
+    var template = '<HabarshiServiceMessage>' +
+        '<file_name>|<#file_name>,' +
+        '<full_url>|<#full_url>,' +
+        '<preview_url>|<#preview_url>';
+    var message;
+    message = replaceInTemplate(template, '#file_name', dataObj['file_name']);
+    message = replaceInTemplate(message, '#full_url', dataObj['full_url']);
+    return replaceInTemplate(message, '#preview_url', dataObj['preview_url']);
+}
+
+function replaceInTemplate(template, key, value) {
+    return template.replace(key, value);
 }
 
 function showError(msg) {
