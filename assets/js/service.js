@@ -1,13 +1,15 @@
 function sendMessageToServer(msg) {
+    var id = UUIDjs.create(1);
     var defer = $.Deferred();
     var sendUrl = new URI(SERVER_URL + '/v1/chat/send')
         .addQuery('session', getSession())
         .addQuery('text', msg)
+        .addQuery('id', id)
         .addQuery('to', getSendTo());
     $.get(sendUrl, function (data) {
         var response = JSON.parse(data);
         if (response['ok'] === true) {
-            appendMessage(response['id'], getUserName(), msg, OUT_MESSAGE, true, new Date());
+            appendMessage(id, getUserName(), msg, OUT_MESSAGE, true, new Date());
             $('#messageInput').val('');
             defer.resolve();
         } else {
