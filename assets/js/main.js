@@ -97,9 +97,7 @@ function setupUpload() {
  * @param response
  * @param jid_userInfo
  */
-function init(response, jid_userInfo) {
-    extractMapJid_Userinfo(response, jid_userInfo);
-    putToStore(STORE_USER_LIST, JSON.stringify(jid_userInfo));
+function init() {
     getMessagesFromServer(null);
     startPolling();
     disableChat(false);

@@ -76,16 +76,29 @@ function auth() {
         putToStore(STORE_UPLOAD_URL, uploadUrl);
         putToStore(STORE_JID, response['pull'][0]['jid']);
         putToStore(STORE_USERNAME, response['username']);
-        var rosterUrl = new URI(SERVER_URL + '/user/roster')
-            .addQuery('session', getSession());
-        $.get(rosterUrl, function (data) {
-            var response = JSON.parse(data);
-            var jid_userInfo = {};
-            init(response, jid_userInfo);
+        initRoast().then(function () {
+            init();
         });
+        setInterval(initRoast, INTERVAL_REFRESH_ROSTER);
     }).fail(function (xhr, message) {
         showError('Не удалось авторизоваться');
     });
+}
+
+function initRoast() {
+    var defer = $.Deferred();
+    var rosterUrl = new URI(SERVER_URL + '/user/roster')
+        .addQuery('session', getSession());
+    $.get(rosterUrl, function (data) {
+        var response = JSON.parse(data);
+        var jid_userInfo = {};
+        extractMapJid_Userinfo(response, jid_userInfo);
+        putToStore(STORE_USER_LIST, JSON.stringify(jid_userInfo));
+        defer.resolve();
+    }).fail(function () {
+        defer.reject();
+    });
+    return defer.promise();
 }
 
 function getMessagesFromServer(after) {

@@ -17,6 +17,8 @@ var MAX_FILE_SIZE = 500000000; // максимальный размер файл
 
 var INTERVAL_POLLING_MILLISEC = 5000;
 var INTERVAL_CHECK_MESSAGE_STATUS_MILLISEC = 4000;
+var INTERVAL_REFRESH_ROSTER = 24 * 60 * 60 * 1000; // сутки
+
 var AUDIO_RECORDING_CHUNK_MILLISEC = 60 * 60 * 1000; // размер чанка в 1 час
 
 var HABARSHI_MESSAGE = '<HabarshiServiceMessage>';
