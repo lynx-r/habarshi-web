@@ -1,0 +1,164 @@
+{"comment": null, "mam":
+{"history":
+[
+  {
+    "from": "director@habarshi.com",
+    "id": "3b2bf57e-4205-4223-a38f-c53b50053807",
+    "jid": "director@habarshi.com",
+    "marker": "acknowledged",
+    "stamp": 1492586916,
+    "text": "2",
+    "time": "2017-04-19T07:28:36",
+    "to": "kuku@habarshi.com"
+  },
+  {
+    "from": "director@habarshi.com",
+    "id": "40ce09e4-7fdb-489c-bded-111dea176b9c",
+    "jid": "director@habarshi.com",
+    "marker": "acknowledged",
+    "stamp": 1492586989,
+    "text": "1",
+    "time": "2017-04-19T07:29:49",
+    "to": "kuku@habarshi.com"
+  },
+  {
+    "from": "director@habarshi.com",
+    "id": "ad0660e6-eeb4-4837-91fd-3d62f2cbb275",
+    "jid": "director@habarshi.com",
+    "marker": "acknowledged",
+    "stamp": 1492586999,
+    "text": "2",
+    "time": "2017-04-19T07:29:59",
+    "to": "kuku@habarshi.com"
+  },
+  {
+    "from": "director@habarshi.com",
+    "id": "183a69a6-ec43-4ccf-9c15-fa7807245143",
+    "jid": "director@habarshi.com",
+    "marker": "acknowledged",
+    "stamp": 1492587006,
+    "text": "1",
+    "time": "2017-04-19T07:30:06",
+    "to": "kuku@habarshi.com"
+  },
+  {
+    "from": "director@habarshi.com",
+    "id": "1dd69878-b699-4984-8242-2eea8fd67971",
+    "jid": "director@habarshi.com",
+    "marker": "acknowledged",
+    "stamp": 1492587263,
+    "text": "1",
+    "time": "2017-04-19T07:34:23",
+    "to": "kuku@habarshi.com"
+  },
+  {
+    "from": "director@habarshi.com",
+    "id": "2ce1d255-fe15-42b5-a991-6a54b6e9adf7",
+    "jid": "director@habarshi.com",
+    "marker": "acknowledged",
+    "stamp": 1492587319,
+    "text": "1",
+    "time": "2017-04-19T07:35:19",
+    "to": "kuku@habarshi.com"
+  },
+  {
+    "from": "director@habarshi.com",
+    "id": "67be52c3-fd7c-4180-b94f-a92dab3526df",
+    "jid": "director@habarshi.com",
+    "marker": "acknowledged",
+    "stamp": 1492587331,
+    "text": "1",
+    "time": "2017-04-19T07:35:31",
+    "to": "kuku@habarshi.com"
+  },
+  {
+    "from": "director@habarshi.com",
+    "id": "fa28afff-97df-4f2d-9171-58cf1031321a",
+    "jid": "director@habarshi.com",
+    "marker": "acknowledged",
+    "stamp": 1492587365,
+    "text": "1",
+    "time": "2017-04-19T07:36:05",
+    "to": "kuku@habarshi.com"
+  },
+  {
+    "from": "director@habarshi.com",
+    "id": "a4d7f4c6-a2c4-41ec-a02e-9acc9565d488",
+    "jid": "director@habarshi.com",
+    "marker": "acknowledged",
+    "stamp": 1492587415,
+    "text": "1",
+    "time": "2017-04-19T07:36:55",
+    "to": "kuku@habarshi.com"
+  },
+  {
+    "from": "director@habarshi.com",
+    "id": "d31116c3-9c21-4fc9-b119-6e2e36ea1e1a",
+    "jid": "director@habarshi.com",
+    "marker": "acknowledged",
+    "stamp": 1492587523,
+    "text": "2",
+    "time": "2017-04-19T07:38:43",
+    "to": "kuku@habarshi.com"
+  },
+  {
+    "from": "director@habarshi.com",
+    "id": "12072cf3-c828-41ac-b623-ad96bd39d749",
+    "jid": "director@habarshi.com",
+    "marker": "acknowledged",
+    "stamp": 1492587550,
+    "text": "3",
+    "time": "2017-04-19T07:39:10",
+    "to": "kuku@habarshi.com"
+  },
+  {
+    "from": "director@habarshi.com",
+    "id": "6a3c117d-3ba3-4d36-812e-527850fc58ed",
+    "jid": "director@habarshi.com",
+    "marker": "acknowledged",
+    "stamp": 1492587630,
+    "text": "1",
+    "time": "2017-04-19T07:40:30",
+    "to": "kuku@habarshi.com"
+  },
+  {
+    "from": "director@habarshi.com",
+    "id": "25e56c32-c887-4e10-b74d-c297f4e5346a",
+    "jid": "director@habarshi.com",
+    "marker": "acknowledged",
+    "stamp": 1492587631,
+    "text": "2",
+    "time": "2017-04-19T07:40:31",
+    "to": "kuku@habarshi.com"
+  },
+  {
+    "from": "director@habarshi.com",
+    "id": "63f202c0-3004-40e2-9b7b-c66c724ed6d1",
+    "jid": "director@habarshi.com",
+    "marker": "acknowledged",
+    "stamp": 1492587632,
+    "text": "3",
+    "time": "2017-04-19T07:40:32",
+    "to": "kuku@habarshi.com"
+  },
+  {"from": "security_bot@habarshi.com", "id": "360afdd4-4462-49e0-b246-2e8b10dbf733", "jid": "security_bot@habarshi.com", "marker": "acknowledged", "stamp": 1492590363, "text": "\u041f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0451\u043d \u0432\u0445\u043e\u0434 \u0432 \u0412\u0430\u0448 \u0430\u043a\u043a\u0430\u0443\u043d\u0442
+  <br/>\n\u0441 \u044d\u0442\u043e\u0433\u043e \u0430\u0434\u0440\u0435\u0441\u0430: 217.66.156.36:52224.", "time": "2017-04-19T08:26:03", "to": "kuku@habarshi.com"}, {"from": "kuku@habarshi.com", "id": "6kYWU-f7cf60b2-6474-4720-974c-358d0b526f73", "jid": "director@habarshi.com", "marker": "markable", "stamp": 1492591105, "text": "
+  <HabarshiServiceMessage>
+  <file_name>|
+  <20170325_125654.jpg>,
+  <full_url>|
+  <http://test.habarshi.com:11987/content/085e5238-be49-4946-b76e-8cdb951b8ec7.jpg>,
+  <preview_url>|
+  <http://test.habarshi.com:11987/content/preview_085e5238-be49-4946-b76e-8cdb951b8ec7.jpg>", "time": "2017-04-19T08:38:25", "to": "director@habarshi.com"}, {"from": "kuku@habarshi.com", "id": "6kYWU-dd33540f-2659-41f4-ad09-613c9f7d51a6", "jid": "director@habarshi.com", "marker": "markable", "stamp": 1492591181, "text": "
+  <HabarshiServiceMessage>
+  <file_name>|
+  <record_1492591140196.wav>,
+  <full_url>|
+  <http://test.habarshi.com:11987/content/205d9f4d-2b39-4088-a932-d88ecdb846ad.wav>,
+  <preview_url>|
+  <null>", "time": "2017-04-19T08:39:41", "to": "director@habarshi.com"}, {"from": "security_bot@habarshi.com", "id": "4bfae918-5951-4fee-be19-d260d312a190", "jid": "security_bot@habarshi.com", "marker": "acknowledged", "stamp": 1492591208, "text": "\u041f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0451\u043d \u0432\u0445\u043e\u0434 \u0432 \u0412\u0430\u0448 \u0430\u043a\u043a\u0430\u0443\u043d\u0442
+  <br/>\n\u0441 \u044d\u0442\u043e\u0433\u043e \u0430\u0434\u0440\u0435\u0441\u0430: 37.143.30.51:37060.", "time": "2017-04-19T08:40:08", "to": "kuku@habarshi.com"}, {"from": "kuku@habarshi.com", "id": "b3cff9c3-b1dd-4887-a504-83b522f1f5bf", "jid": "director@habarshi.com", "marker": "markable", "stamp": 1492591231, "text": "
+  <HabarshiServiceMessage>
+  <file_name>|<\u0420\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f Habarshi (1).docx>,
+  <full_url>|
+  <http://test.habarshi.com:11987/content/c2143d3b-3f1d-4959-a6ac-4d60328998d8.docx>", "time": "2017-04-19T08:40:31", "to": "director@habarshi.com"}, {"from": "kuku@habarshi.com", "id": "b0ceef00-014b-4305-8110-350dc3ca8a4d", "jid": "director@habarshi.com", "marker": "markable", "stamp": 1492591498, "text": "hallo", "time": "2017-04-19T08:44:58", "to": "director@habarshi.com"}], "tail": {"size": 170}}, "ok": true}

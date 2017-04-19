@@ -1,45 +1,3 @@
-function uploadFile(file) {
-    var defer = $.Deferred();
-    if (file === undefined || file.size > MAX_FILE_SIZE) {
-        return defer.reject('Файл слишком большой!');
-    }
-    var audioFile = file.type === 'audio/mp3';
-    var formData = new FormData();
-    formData.append('file', file);
-    var options = {
-        url: getUploadUrl(),
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        xhr: function () {
-            var xhr = $.ajaxSettings.xhr();
-            xhr.upload.onprogress = uploadProgress;
-            return xhr;
-        }
-    };
-    document.body.style.cursor = 'wait';
-    $.ajax(options)
-        .done(function (data) {
-            var response = JSON.parse(data);
-            var fullUrl = response['full_url'];
-            var fileLink, message;
-            if (audioFile) {
-                fileLink = '<audio src="' + fullUrl + '" controls></audio>';
-                message = getUserName() + ' загрузил аудио файл <br>' + fileLink;
-            } else {
-                fileLink = '<a href="' + fullUrl + '" target="_blank">' + file.name + '</a>';
-                message = getUserName() + ' загрузил файл ' + fileLink;
-            }
-            document.body.style.cursor = 'auto';
-            defer.resolve(message);
-        })
-        .fail(function (xhr, message) {
-            document.body.style.cursor = 'auto';
-            defer.reject('Ошибка во время загрузки файлйа!');
-        });
-    return defer.promise();
-}
 
 function uploadProgress(event) {
     var percent = parseInt(event.loaded / event.total * 100);
@@ -97,4 +55,93 @@ function putToStore(name, value) {
     // }
     //
     // document.cookie = updatedCookie;
+}
+
+function isHabarshiMessage(text) {
+    return text.startsWith(HABARSHI_MESSAGE);
+}
+
+function parseHabarshiMessage(text) {
+    var rx = /<file_name>\|<([^>]+)>,<full_url>\|<([^>]+)>(?:,<preview_url>\|<([^>]+)>)?/g;
+    var match = rx.exec(text);
+    var fileName = match[1];
+    var fullUrl = match[2];
+    var type = new Mimer().get(fullUrl);
+    var previewUrl = match[3] === undefined ? "null" : match[3];
+    var msg = {
+        file_name: fileName,
+        full_url: fullUrl,
+        preview_url: previewUrl,
+        type: type
+    };
+    log(msg);
+    return msg;
+}
+
+function showError(msg) {
+    alert(msg);
+    log(msg);
+}
+
+function log(msg) {
+    console.log(msg);
+}
+
+
+function getUserName() {
+    return getFromStore(STORE_USERNAME);
+}
+
+function getJid() {
+    return getFromStore(STORE_JID);
+}
+
+function getSession() {
+    return getFromStore(STORE_SESSION);
+}
+
+function getSendTo() {
+    return getFromStore(STORE_SEND_TO);
+}
+
+function getUploadUrl() {
+    return getFromStore(STORE_UPLOAD_URL);
+}
+
+function getUserList() {
+    return JSON.parse(getFromStore(STORE_USER_LIST));
+}
+
+function isAuthenticated() {
+    // проверить что сессия истекла
+    return getFromStore(STORE_AUTH) === 'false' || getFromStore(STORE_AUTH) === null
+        || getFromStore(STORE_JID) === null;
+}
+
+function incNumSentMessages() {
+    var sentMsgs = getFromStore(STORE_NUM_SENT_MESSAGES);
+    putToStore(STORE_NUM_SENT_MESSAGES, sentMsgs + 1);
+}
+
+function setNumSentMessages(num) {
+    putToStore(STORE_NUM_SENT_MESSAGES, num);
+}
+
+/**
+ * Создает мап на основе данных полученных из вызова метода /user/roster
+ * @param data список пользователей и групп
+ * @param jid_userInfo мап {jid: <список пользователей и групп>}
+ */
+function extractMapJid_Userinfo(data, jid_userInfo) {
+    data.forEach(function (struc) {
+        var map = {};
+        struc['users'].reduce(function (p1, p2) {
+            p1[p2['jid']] = p2;
+            return p1;
+        }, map);
+        $.extend(jid_userInfo, map);
+        if (struc['children'] !== undefined) {
+            extractMapJid_Userinfo(struc['children'], jid_userInfo);
+        }
+    });
 }

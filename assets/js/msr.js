@@ -76,7 +76,7 @@ function onMediaError(e) {
     console.error('media error', e);
 }
 
-function finishEncoding(mp3Data, appendMessage, defer) {
+function finishEncoding(mp3Data, defer) {
     mp3buf = mp3encoder.flush();   //finish writing mp3
     // префикс msr обязателен!
     var file = new File(mp3Data, 'msr-' + (new Date).toISOString().replace(/:|\./g, '-') + '.mp3', {
