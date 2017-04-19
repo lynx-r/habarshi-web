@@ -18,19 +18,18 @@ function createMessageHTML(id, username, date, message, type) {
 
 function createHabarshiHTML(text) {
     var msgObj = parseHabarshiMessage(text);
-    if (msgObj['type'].startsWith('audio/')) {
-
-    }
-
-    return '<div class="srv-msg message">' + JSON.stringify(msgObj) + '</div>'
+    var message = createFileMessageHTML(msgObj['type'], msgObj['full_url'], msgObj['file_name'], msgObj['preview_url']);
+    return '<div class="srv-msg message">' + message + '</div>'
 }
 
-function createFileMessageHTML(type, fullUrl, fileName) {
+function createFileMessageHTML(type, fullUrl, fileName, previewUrl) {
     var message, fileLink;
     if (type.startsWith('audio/')) {
         fileLink = '<audio src="' + fullUrl + '" controls></audio>';
         message = getUserName() + ' загрузил аудио файл <br>' + fileLink;
     } else if (type.startsWith('image/')) {
+        fileLink = '<a href="' + fullUrl + '" target="_blank"><img src="' + previewUrl + '"/></a>';
+        message = getUserName() + ' загрузил файл ' + fileLink;
     } else {
         fileLink = '<a href="' + fullUrl + '" target="_blank">' + fileName + '</a>';
         message = getUserName() + ' загрузил файл ' + fileLink;
