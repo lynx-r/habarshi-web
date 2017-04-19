@@ -67,7 +67,7 @@ function onMediaSuccess(defer, stream) {
         };
         fileReader.readAsArrayBuffer(blob);
     };
-    mediaRecorder.start(AUDIO_RECORDING_CHUNK_SEC);
+    mediaRecorder.start(AUDIO_RECORDING_CHUNK_MILLISEC);
     return defer.promise();
 }
 

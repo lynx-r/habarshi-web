@@ -21,7 +21,8 @@
 }
 
 .in-msg {
-    max-width: 50vh;
+    min-width: 50vh;
+    max-width: 70vh;
     background: rgba(255, 0, 0, 0.4);
 }
 
@@ -65,4 +66,20 @@
 
 .red, .red:hover, .red:focus {
     background-color: red;
+}
+
+.check-success, .received.acknowledged .check-success {
+    display: none;
+}
+
+.double-check-success {
+    display: none;
+}
+
+.acknowledged .double-check-success {
+    display: inline-block;
+}
+
+.received .check-success {
+    display: inline-block;
 }

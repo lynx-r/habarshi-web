@@ -104,7 +104,6 @@ function getMessagesFromServer(after) {
         history.forEach(function (item) {
             var msgId = item['id'];
             msgIds.push(msgId);
-            // putToStore(STORE_AFTER_MESSAGE, null);
             var jidFrom = item['from'];
             var to = item['to'].split('@');
             var type = item['to'] === getJid() ? IN_MESSAGE : OUT_MESSAGE;
@@ -127,13 +126,23 @@ function getMessagesFromServer(after) {
 
         // сохраняем id последнего сообщения
         putToStore(STORE_AFTER_MESSAGE, msgIds[msgIds.length - 1]);
+        putToStore(STORE_RECENT_MESSAGES, msgIds);
+        scrollMessagesToBottom();
+        checkingMessagesStatus();
+    })
+}
 
+function checkingMessagesStatus() {
+    setInterval(function () {
+        var msgIds = getFromStore(STORE_RECENT_MESSAGES);
         var userMamAck = new URI(SERVER_URL + '/user/mam_ack')
             .addQuery('session', getSession())
             .addQuery('ids', JSON.stringify(msgIds));
         $.get(userMamAck, function (data) {
-            log(data);
+            var response = JSON.parse(data);
+            $.each(response['ack'], function (id, clazz) {
+                ackMessage(id, clazz);
+            })
         });
-        scrollMessagesToBottom();
-    })
+    }, INTERVAL_CHECK_MESSAGE_STATUS_MILLISEC);
 }

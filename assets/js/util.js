@@ -142,15 +142,6 @@ function isAuthenticated() {
         || getFromStore(STORE_JID) === null;
 }
 
-function incNumSentMessages() {
-    var sentMsgs = getFromStore(STORE_NUM_SENT_MESSAGES);
-    putToStore(STORE_NUM_SENT_MESSAGES, sentMsgs + 1);
-}
-
-function setNumSentMessages(num) {
-    putToStore(STORE_NUM_SENT_MESSAGES, num);
-}
-
 /**
  * Создает мап на основе данных полученных из вызова метода /user/roster
  * @param data список пользователей и групп
@@ -168,4 +159,8 @@ function extractMapJid_Userinfo(data, jid_userInfo) {
             extractMapJid_Userinfo(struc['children'], jid_userInfo);
         }
     });
+}
+
+function getSec(millisec) {
+    return millisec * 1000;
 }

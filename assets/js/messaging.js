@@ -1,5 +1,13 @@
 function formattedHTMLMessage(type, username, date, message, id) {
-    var formattedMsg = '<p><b>' + (type === IN_MESSAGE ? username : 'Я' ) + '</b> ' + date.toLocaleString() + '</p>'
+    var formattedMsg = '<p><b>' + (type === IN_MESSAGE ? username : 'Я' ) + '</b> ' + date.toLocaleString() +
+        '<span class="fa-lg check-success">' +
+        '<i class="fa fa-check" style="margin-left:4px"></i>' +
+        '</span>' +
+        '<span class="fa-stack fa-lg double-check-success">' +
+        '<i class="fa fa-check fa-stack-1x" style="margin-left:4px"></i>' +
+        '<i class="fa fa-check  fa-stack-1x" style="margin-left:-4px"></i>' +
+        '</span>' +
+        '</p>'
         + '<div>' + message + '</div>'
         + '</div>';
     return '<div style="overflow: hidden;" data-id="' + id + '">' +
@@ -45,11 +53,6 @@ function appendMessage(id, username, message, type, scroll, date) {
     }
     var $messages = $('#messages');
     $messages.append(createMessageHTML(id, username, date, message, type));
-    if (id === null) {
-        incNumSentMessages();
-    } else {
-        setNumSentMessages(0);
-    }
     if (scroll !== undefined && scroll) {
         scrollMessagesToBottom();
     }
@@ -59,4 +62,3 @@ function scrollMessagesToBottom() {
     var $messages = $('#messages');
     $messages.animate({scrollTop: $messages.scrollTop() + $messages.prop('scrollHeight')}, "slow");
 }
-

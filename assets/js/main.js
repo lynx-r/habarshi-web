@@ -25,7 +25,7 @@ function checkIsValidUrl() {
 function startPolling() {
     setInterval(function () {
         getMessagesFromServer(getFromStore(STORE_AFTER_MESSAGE));
-    }, POLL_INTERVAL);
+    }, INTERVAL_POLLING_MILLISEC);
 }
 
 /**
@@ -189,7 +189,7 @@ function toggleAudioRecording(startRecording, blinkRecordingInterval) {
         if (startRecording === false) {
             // $('#toggleRecordAudio').prop('disabled', false);
         }
-    }, AUDIO_RECORDING_CHUNK_SEC);
+    }, AUDIO_RECORDING_CHUNK_MILLISEC);
     return startRecording;
 }
 
@@ -208,6 +208,16 @@ function setupHandlers() {
     });
 }
 
+function ackMessage(id, clazz) {
+    var $message = $('[data-id=' + id + ']');
+    // удаляем предыдущие классы
+    var ackClasses = ['acknowledged', 'received', 'markable'];
+    ackClasses.forEach(function (c) {
+        $message.removeClass(c);
+    });
+    $message.addClass(clazz);
+}
+
 $(document).ready(function () {
     setup();
 
@@ -223,4 +233,5 @@ $(document).ready(function () {
     }
     setupUpload();
     setupHandlers();
+    checkingMessagesStatus();
 });
