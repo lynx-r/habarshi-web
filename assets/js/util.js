@@ -94,7 +94,7 @@ function createHabarshiMessage(dataObj) {
         '<preview_url>|<#preview_url>';
     var message;
     message = replaceInTemplate(template, '#file_name', dataObj['file_name']);
-    message = replaceInTemplate(message, '#full_url', dataObj['full_url']);
+    // message = replaceInTemplate(message, '#full_url', dataObj['full_url']);
     return replaceInTemplate(message, '#preview_url', dataObj['preview_url']);
 }
 

@@ -1,38 +1,36 @@
+function formattedHTMLMessage(type, username, date, message, id) {
+    var formattedMsg = '<p><b>' + (type === IN_MESSAGE ? username : 'Я' ) + '</b> ' + date.toLocaleString() + '</p>'
+        + '<div>' + message + '</div>'
+        + '</div>';
+    return '<div style="overflow: hidden;" data-id="' + id + '">' +
+        '<div class="' + (type === IN_MESSAGE ? 'in' : 'out') + '-msg message">'
+        + formattedMsg
+        + '</div>';
+}
 function createMessageHTML(id, username, date, message, type) {
     if (type === SERVICE_MESSAGE) {
         return '<div class="srv-msg message">' + message + '</div>';
     } else {
         if (isHabarshiMessage(message)) {
-            return createHabarshiHTML(message);
-        } else {
-            var formattedMsg = '<p><b>' + (type === IN_MESSAGE ? username : 'Я' ) + '</b> ' + date.toLocaleString() + '</p>'
-                + '<div>' + message + '</div>'
-                + '</div>';
-            return '<div style="overflow: hidden;" data-id="' + id + '">' +
-                '<div class="' + (type === IN_MESSAGE ? 'in' : 'out') + '-msg message">'
-                + formattedMsg
-                + '</div>';
+            message = createHabarshiHTML(message);
         }
+        return formattedHTMLMessage(type, username, date, message, id);
     }
 }
 
 function createHabarshiHTML(text) {
     var msgObj = parseHabarshiMessage(text);
-    var message = createFileMessageHTML(msgObj['type'], msgObj['full_url'], msgObj['file_name'], msgObj['preview_url']);
-    return '<div class="srv-msg message">' + message + '</div>'
+    return createFileMessageHTML(msgObj['type'], msgObj['full_url'], msgObj['file_name'], msgObj['preview_url']);
 }
 
 function createFileMessageHTML(type, fullUrl, fileName, previewUrl) {
-    var message, fileLink;
+    var message;
     if (type.startsWith('audio/')) {
-        fileLink = '<audio src="' + fullUrl + '" controls></audio>';
-        message = getUserName() + ' загрузил аудио файл <br>' + fileLink;
+        message = '<audio src="' + fullUrl + '" controls></audio>';
     } else if (type.startsWith('image/')) {
-        fileLink = '<a href="' + fullUrl + '" target="_blank"><img src="' + previewUrl + '"/></a>';
-        message = getUserName() + ' загрузил файл ' + fileLink;
+        message = '<a href="' + fullUrl + '" target="_blank"><img src="' + previewUrl + '"/></a>';
     } else {
-        fileLink = '<a href="' + fullUrl + '" target="_blank">' + fileName + '</a>';
-        message = getUserName() + ' загрузил файл ' + fileLink;
+        message = '<a href="' + fullUrl + '" target="_blank">' + fileName + '</a>';
     }
     return message;
 }
