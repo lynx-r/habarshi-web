@@ -22,6 +22,7 @@ function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
 function toggleRecording(start) {
     var defer = $.Deferred();
     if (start === true) {
+        mp3Data = [];
         mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
         captureUserMedia(mediaConstraints, function (stream) {
             return onMediaSuccess(defer, stream);
