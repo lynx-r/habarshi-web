@@ -183,11 +183,11 @@ function toggleAudioRecording(startRecording, blinkRecordingInterval) {
     });
     startRecording = !startRecording;
     if (startRecording === false) {
-        $('#toggleRecordAudio').prop('disabled', true);
+        // $('#toggleRecordAudio').prop('disabled', true);
     }
     setTimeout(function () {
         if (startRecording === false) {
-            $('#toggleRecordAudio').prop('disabled', false);
+            // $('#toggleRecordAudio').prop('disabled', false);
         }
     }, AUDIO_RECORDING_CHUNK_SEC);
     return startRecording;

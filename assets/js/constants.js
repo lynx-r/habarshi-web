@@ -15,6 +15,6 @@ var SERVER_URL = 'https://test.habarshi.com:11999';
 var STORE_UPLOAD_URL;
 var MAX_FILE_SIZE = 500000000; // максимальный размер файла - 500 мб.
 var POLL_INTERVAL = 5000;
-var AUDIO_RECORDING_CHUNK_SEC = 5000;
+var AUDIO_RECORDING_CHUNK_SEC = 10 * 60 * 1000; // размер чанка в 10 минут
 
 var HABARSHI_MESSAGE = '<HabarshiServiceMessage>';

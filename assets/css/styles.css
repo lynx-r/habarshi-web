@@ -63,6 +63,6 @@
     cursor: pointer;
 }
 
-.red, .red:hover, .red:disabled:hover {
+.red, .red:hover, .red:focus {
     background-color: red;
 }
