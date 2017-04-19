@@ -172,13 +172,13 @@ function toggleAudioRecording(startRecording, blinkRecordingInterval) {
         blinkRecordingInterval = setInterval(function () {
             $('#toggleRecordAudio').toggleClass('red');
         }, 1000);
-    } else {
     }
+
     toggleRecording(startRecording).then(function (data) {
-        if (startRecording === true && data['status'] === 'success') {
+        if (startRecording === false && data['status'] === 'success') {
             clearInterval(blinkRecordingInterval);
             $('#toggleRecordAudio').removeClass('red');
-            createMessageHTML(null, getUserName(), new Date(), data['message'], SERVICE_MESSAGE);
+            sendMessageToServer(data['message']);
         }
     });
     startRecording = !startRecording;
@@ -189,7 +189,8 @@ function toggleAudioRecording(startRecording, blinkRecordingInterval) {
         if (startRecording === false) {
             $('#toggleRecordAudio').prop('disabled', false);
         }
-    }, 5000);
+    }, AUDIO_RECORDING_CHUNK_SEC);
+    return startRecording;
 }
 
 /**
@@ -203,7 +204,7 @@ function setupHandlers() {
     var startRecording = true;
     var blinkRecordingInterval;
     $('#toggleRecordAudio').click(function () {
-        toggleAudioRecording(startRecording, blinkRecordingInterval);
+        startRecording = toggleAudioRecording(startRecording, blinkRecordingInterval);
     });
 }
 

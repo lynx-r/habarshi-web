@@ -38,7 +38,7 @@ function uploadFile(file) {
             return xhr;
         }
     };
-    document.body.style.cursor = 'wait!important';
+    document.body.style.cursor = 'wait';
     $.ajax(options)
         .done(function (data) {
             var response = JSON.parse(data);
@@ -51,8 +51,10 @@ function uploadFile(file) {
             defer.resolve(message);
         })
         .fail(function (xhr, message) {
-            document.body.style.cursor = 'auto';
             defer.reject('Ошибка во время загрузки файлйа!');
+        })
+        .always(function () {
+            document.body.style.cursor = 'auto';
         });
     return defer.promise();
 }

@@ -59,16 +59,14 @@ function onMediaSuccess(defer, stream) {
             if (mp3buf.length > 0) {
                 mp3Data.push(new Int8Array(mp3buf));
             }
-            log(mp3Data.length);
 
             if (recordStopped) {
-                log('e '+mp3Data.length);
                 finishEncoding(mp3Data, defer);
             }
         };
         fileReader.readAsArrayBuffer(blob);
     };
-    mediaRecorder.start(5000);
+    mediaRecorder.start(AUDIO_RECORDING_CHUNK_SEC);
     return defer.promise();
 }
 
@@ -84,7 +82,7 @@ function finishEncoding(mp3Data, defer) {
     });
 
     uploadFile(file).then(function (data) {
-        defer.resolve({'status': 'success', 'text': data});
+        defer.resolve({'status': 'success', 'message': data});
     }, function (xhr, message) {
         showError('Не удалось загрузить аудио файл: ' + message);
         defer.reject({'status': 'fail'});
