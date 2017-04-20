@@ -212,5 +212,4 @@ $(document).ready(function () {
     }
     setupUpload();
     setupHandlers();
-    checkingMessagesStatus();
 });

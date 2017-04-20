@@ -10,6 +10,7 @@ function sendMessageToServer(msg) {
         .addQuery('session', getSession())
         .addQuery('text', msg)
         .addQuery('id', id)
+        .addQuery('with', 'to')
         .addQuery('to', getSendTo());
     $.get(sendUrl, function (data) {
         var response = JSON.parse(data);
@@ -176,6 +177,9 @@ function getMessagesFromServer(after) {
 function checkingMessagesStatus() {
     setInterval(function () {
         var msgIds = getFromStore(STORE_RECENT_MESSAGES);
+        if (msgIds === null || msgIds === 'null') {
+            return;
+        }
         var userMamAck = new URI(SERVER_URL + '/user/mam_ack')
             .addQuery('session', getSession())
             .addQuery('ids', JSON.stringify(msgIds));
@@ -185,5 +189,6 @@ function checkingMessagesStatus() {
                 ackMessage(id, clazz);
             })
         });
+        putToStore(STORE_RECENT_MESSAGES, null);
     }, INTERVAL_CHECK_MESSAGE_STATUS_MILLISEC);
 }
