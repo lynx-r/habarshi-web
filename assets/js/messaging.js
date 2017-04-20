@@ -60,5 +60,5 @@ function appendMessage(id, username, message, type, scroll, date) {
 
 function scrollMessagesToBottom() {
     var $messages = $('#messages');
-    $messages.animate({scrollTop: $messages.scrollTop() + $messages.prop('scrollHeight')}, "slow");
+    $messages.animate({scrollTop: $messages.scrollTop() + $messages.prop('scrollHeight') * 2}, "slow");
 }
