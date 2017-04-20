@@ -189,6 +189,5 @@ function checkingMessagesStatus() {
                 ackMessage(id, clazz);
             })
         });
-        putToStore(STORE_RECENT_MESSAGES, null);
     }, INTERVAL_CHECK_MESSAGE_STATUS_MILLISEC);
 }
