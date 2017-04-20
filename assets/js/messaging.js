@@ -58,6 +58,9 @@ function appendMessage(id, username, message, type, scroll, date) {
     }
 }
 
+/**
+ * скролл в самый низ плюс двойной экран
+ */
 function scrollMessagesToBottom() {
     var $messages = $('#messages');
     $messages.animate({scrollTop: $messages.scrollTop() + $messages.prop('scrollHeight') * 2}, "slow");
