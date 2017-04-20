@@ -29,28 +29,13 @@ function startPolling() {
 }
 
 /**
- * меняет иконку кнопки выбора файлов со скрепки на плюс, когда наводится файл на кнопку для D&D
- * @param attachIcon
- * @param type
- */
-function toggleSelectFileButton(attachIcon, type) {
-    if (type === 'plus') {
-        attachIcon.removeClass('fa-paperclip');
-        attachIcon.addClass('fa-plus');
-    } else {
-        attachIcon.removeClass('fa-plus');
-        attachIcon.addClass('fa-paperclip');
-    }
-}
-
-/**
  * Подготовка загрзуки файлов
  */
 function setupUpload() {
     if (typeof(window.FileReader) === 'undefined') {
         showError('Drag&Drop не поддерживается браузером!');
     }
-    var dropZone = $('#attachButton');
+    var dropZone = $('#messages');
     var attachIcon = $('#attachIcon');
 
     // Простая загрузка
@@ -64,13 +49,11 @@ function setupUpload() {
     // Drag & Drop Upload
     dropZone[0].ondragover = function () {
         dropZone.addClass('hover');
-        toggleSelectFileButton(attachIcon, 'plus');
         return false;
     };
 
     dropZone[0].ondragleave = function () {
         dropZone.removeClass('hover');
-        toggleSelectFileButton(attachIcon, 'paperclip');
         return false;
     };
     dropZone[0].ondrop = function (event) {
@@ -81,12 +64,10 @@ function setupUpload() {
         uploadFile(file).then(function (message) {
             sendMessageToServer(message).always(function () {
                 dropZone.removeClass('drop');
-                toggleSelectFileButton(attachIcon, 'paperclip');
             });
         }, function (error) {
             showError(error);
             dropZone.addClass('error');
-            toggleSelectFileButton(attachIcon, 'paperclip');
         }, function (progress) {
         });
     };
