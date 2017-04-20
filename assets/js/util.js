@@ -15,7 +15,6 @@ function getUrlVars() {
     return vars;
 }
 
-// возвращает cookie с именем name, если есть, если нет, то undefined
 function getFromStore(name) {
     return localStorage.getItem(name);
     // var matches = document.cookie.match(new RegExp(
@@ -54,6 +53,11 @@ function putToStore(name, value) {
     // document.cookie = updatedCookie;
 }
 
+/**
+ * Проверка что сообщение является сообщением с файлами
+ * @param text
+ * @returns {*}
+ */
 function isHabarshiMessage(text) {
     return text.startsWith(HABARSHI_MESSAGE);
 }
@@ -87,6 +91,11 @@ function parseHabarshiMessage(text) {
     };
 }
 
+/**
+ * Сформировать сообщение с файлами в формате Habarshi
+ * @param dataObj
+ * @returns {*}
+ */
 function createHabarshiMessage(dataObj) {
     var template = '<HabarshiServiceMessage>' +
         '<file_name>|<#file_name>,' +
@@ -159,8 +168,4 @@ function extractMapJid_Userinfo(data, jid_userInfo) {
             extractMapJid_Userinfo(struc['children'], jid_userInfo);
         }
     });
-}
-
-function getSec(millisec) {
-    return millisec * 1000;
 }

@@ -1,3 +1,8 @@
+/**
+ * Отправить сообщение на сервер
+ * @param msg
+ * @returns {*}
+ */
 function sendMessageToServer(msg) {
     var id = UUIDjs.create(1);
     var defer = $.Deferred();
@@ -20,6 +25,11 @@ function sendMessageToServer(msg) {
     return defer.promise();
 }
 
+/**
+ * Загрузить файл на сервер
+ * @param file
+ * @returns {*}
+ */
 function uploadFile(file) {
     var defer = $.Deferred();
     if (file === undefined || file.size > MAX_FILE_SIZE) {
@@ -61,6 +71,9 @@ function uploadFile(file) {
     return defer.promise();
 }
 
+/**
+ * Аутентификация
+ */
 function auth() {
     // aaa62d15-ee1c-4e3f-bafe-eb15e9b1a974
     var sessionConfigUrl = new URI(SERVER_URL + '/session-config')
@@ -76,16 +89,20 @@ function auth() {
         putToStore(STORE_UPLOAD_URL, uploadUrl);
         putToStore(STORE_JID, response['pull'][0]['jid']);
         putToStore(STORE_USERNAME, response['username']);
-        initRoast().then(function () {
+        initRoster().then(function () {
             init();
         });
-        setInterval(initRoast, INTERVAL_REFRESH_ROSTER);
+        setInterval(initRoster, INTERVAL_REFRESH_ROSTER);
     }).fail(function (xhr, message) {
         showError('Не удалось авторизоваться');
     });
 }
 
-function initRoast() {
+/**
+ * Взять данные об аккаунтах из реестра, создать мап на их основе и положить в хранилище
+ * @returns {*}
+ */
+function initRoster() {
     var defer = $.Deferred();
     var rosterUrl = new URI(SERVER_URL + '/user/roster')
         .addQuery('session', getSession());
@@ -101,12 +118,18 @@ function initRoast() {
     return defer.promise();
 }
 
+/**
+ * Получить сообщения с сервера
+ * @param after
+ */
 function getMessagesFromServer(after) {
     var userMamUrl = new URI(SERVER_URL + '/user/mam')
         .addQuery('session', getSession());
     if (after !== null && after !== "null") {
+        // полчить сообщения после сообщения с id = after
         userMamUrl.addQuery('after', after);
     }
+    // получить историю
     $.get(userMamUrl, function (data) {
         var response = JSON.parse(data);
         var history = response['mam']['history'];
@@ -123,6 +146,7 @@ function getMessagesFromServer(after) {
             if (item['from'] === 'security_bot@habarshi.com') {
                 type = SERVICE_MESSAGE;
             }
+            // получить имя пользователя
             var userinfoFrom = getUserList()[jidFrom];
             var receivedFrom;
             if (userinfoFrom !== undefined) {
@@ -131,6 +155,7 @@ function getMessagesFromServer(after) {
                 receivedFrom = jidFrom;
             }
             var date = new Date(parseInt(item['stamp']) * 1000);
+            // если начальный вызов или входящее сообщение, то добавляем на экран
             if (after === null || type === IN_MESSAGE) {
                 var username = type === IN_MESSAGE ? receivedFrom : getUserName();
                 appendMessage(msgId, username, item['text'], type, false, date);
@@ -145,6 +170,9 @@ function getMessagesFromServer(after) {
     })
 }
 
+/**
+ * Проставляем статусы сообщений
+ */
 function checkingMessagesStatus() {
     setInterval(function () {
         var msgIds = getFromStore(STORE_RECENT_MESSAGES);

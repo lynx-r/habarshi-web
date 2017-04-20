@@ -19,6 +19,11 @@ function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
     navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
 }
 
+/**
+ * Включить/выключить запись аудио
+ * @param start
+ * @returns {*}
+ */
 function toggleRecording(start) {
     var defer = $.Deferred();
     if (start === true) {
@@ -39,6 +44,12 @@ function toggleRecording(start) {
     return defer.promise();
 }
 
+/**
+ * Запись завершена. Сохранение
+ * @param defer
+ * @param stream
+ * @returns {*}
+ */
 function onMediaSuccess(defer, stream) {
     var audio = document.createElement('audio');
     audio = mergeProps(audio, {
@@ -75,6 +86,11 @@ function onMediaError(e) {
     console.error('media error', e);
 }
 
+/**
+ * Перекодирование завершено. Загрузка на сервер
+ * @param mp3Data
+ * @param defer
+ */
 function finishEncoding(mp3Data, defer) {
     mp3buf = mp3encoder.flush();   //finish writing mp3
     // префикс msr обязателен!
